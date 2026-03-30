@@ -215,6 +215,85 @@
     text-align: center; padding: 24px;
   }
 
+  /* Game Info Card */
+  .game-card-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    padding: 20px;
+  }
+  .game-card-overlay.visible { opacity: 1; pointer-events: all; }
+
+  .game-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    width: 100%; max-width: 440px; overflow: hidden;
+    transform: translateY(10px) scale(0.97); transition: transform 0.2s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .game-card-overlay.visible .game-card { transform: translateY(0) scale(1); }
+
+  .game-card-banner {
+    width: 100%; height: 180px; object-fit: cover; display: block;
+    background: var(--surface2);
+  }
+
+  .game-card-body { padding: 20px; }
+
+  .game-card-title {
+    font-family: var(--sans); font-size: 1.15rem; font-weight: 700;
+    color: var(--text); margin-bottom: 4px;
+  }
+
+  .game-card-meta {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; margin-bottom: 16px;
+  }
+
+  .game-card-tag {
+    font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px;
+    border-radius: 6px; background: var(--surface2); color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  .game-card-tag.accent { color: var(--accent); border-color: rgba(34,211,238,0.3); background: var(--accent-dim); }
+  .game-card-tag.green { color: var(--green); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.08); }
+  .game-card-tag.yellow { color: var(--yellow); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
+
+  .game-card-depots {
+    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .game-card-depots-title {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 8px;
+  }
+  .game-card-depot-row {
+    font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
+    padding: 4px 0; display: flex; justify-content: space-between;
+  }
+  .game-card-depot-row .depot-name { color: var(--text); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .game-card-depot-row .depot-status { color: var(--green); }
+  .game-card-depot-row .depot-status.missing { color: var(--red); }
+
+  .game-card-actions {
+    display: flex; gap: 8px; margin-top: 16px;
+  }
+  .game-card-actions button {
+    flex: 1; padding: 10px; border-radius: 8px; font-family: var(--mono);
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
+  }
+  .card-btn-generate { background: var(--accent); color: var(--bg); }
+  .card-btn-generate:hover { box-shadow: 0 0 16px var(--accent-glow); }
+  .card-btn-close { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border) !important; }
+  .card-btn-close:hover { color: var(--text); }
+
+  .game-card-loading {
+    padding: 40px; text-align: center; font-family: var(--mono);
+    font-size: 0.85rem; color: var(--text-dim);
+  }
+  .game-card-loading .spinner {
+    display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin-bottom: 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -308,6 +387,11 @@
         <div class="no-results" id="searchEmpty">JSON dosyalarını yükleyin, ardından arama yapabilirsiniz.</div>
       </div>
     </div>
+  </div>
+
+  <!-- Game Info Card Overlay -->
+  <div class="game-card-overlay" id="gameCardOverlay" onclick="if(event.target===this)closeCard()">
+    <div class="game-card" id="gameCard"></div>
   </div>
 
 </div>
@@ -530,12 +614,7 @@ function doSearch() {
   for (const r of display) {
     const item = document.createElement("div");
     item.className = "search-result-item";
-    item.onclick = () => {
-      if (r.type === 'depot') {
-        switchTab('single');
-        $("appIdInput").value = r.id;
-      }
-    };
+    item.onclick = () => openGameCard(r.id);
     item.innerHTML = `
       <span class="result-id">${r.id}</span>
       <span class="result-key" title="${r.value}">${r.value}</span>
@@ -551,6 +630,91 @@ function doSearch() {
     container.appendChild(more);
   }
 }
+
+// ===== GAME CARD =====
+const appInfoCache = {};
+
+async function openGameCard(depotId) {
+  const overlay = $("gameCardOverlay");
+  const card = $("gameCard");
+  overlay.classList.add("visible");
+  card.innerHTML = '<div class="game-card-loading"><div class="spinner"></div><br>Bilgi çekiliyor...</div>';
+
+  const info = await fetchJSON(STEAMCMD_API + depotId);
+  if (!info || info.status !== "success") {
+    card.innerHTML = `
+      <div class="game-card-body">
+        <div class="game-card-title">ID: ${depotId}</div>
+        <div style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;margin-top:8px;">
+          Bilgi alınamadı — bu bir depot ID olabilir, app ID değil.
+        </div>
+        <div class="game-card-actions">
+          <button class="card-btn-close" onclick="closeCard()">Kapat</button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const gd = info.data[String(depotId)];
+  const name = gd?.common?.name || "Unknown";
+  const type = gd?.common?.type || "";
+  const appId = depotId;
+  const depots = gd?.depots || {};
+
+  // Count depots info
+  let totalDepots = 0, keysFound = 0, dlcCount = 0;
+  for (const [did, di] of Object.entries(depots)) {
+    if (!/^\d+$/.test(did)) continue;
+    totalDepots++;
+    if (depotKeys[did]) keysFound++;
+    if (di.dlcappid) dlcCount++;
+  }
+
+  const hasWorkshop = "workshopdepot" in depots;
+  const headerImg = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
+
+  // Build depot list (max 8)
+  const depotEntries = Object.entries(depots).filter(([id]) => /^\d+$/.test(id)).slice(0, 8);
+  let depotHTML = '';
+  for (const [did, di] of depotEntries) {
+    const dName = di.name || did;
+    const hasKey = !!depotKeys[did];
+    depotHTML += `<div class="game-card-depot-row">
+      <span class="depot-name">${dName}</span>
+      <span class="depot-status ${hasKey ? '' : 'missing'}">${hasKey ? '✓ key' : '✗ yok'}</span>
+    </div>`;
+  }
+  if (Object.keys(depots).filter(id => /^\d+$/.test(id)).length > 8) {
+    depotHTML += `<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding-top:4px;">... ve daha fazlası</div>`;
+  }
+
+  card.innerHTML = `
+    <img class="game-card-banner" src="${headerImg}" onerror="this.style.display='none'" alt="">
+    <div class="game-card-body">
+      <div class="game-card-title">${name}</div>
+      <div class="game-card-meta">
+        <span class="game-card-tag accent">AppID: ${appId}</span>
+        ${type ? `<span class="game-card-tag">${type}</span>` : ''}
+        ${dlcCount > 0 ? `<span class="game-card-tag yellow">${dlcCount} DLC</span>` : ''}
+        ${hasWorkshop ? `<span class="game-card-tag green">Workshop</span>` : ''}
+        <span class="game-card-tag">${keysFound}/${totalDepots} key</span>
+      </div>
+      ${depotHTML ? `<div class="game-card-depots">
+        <div class="game-card-depots-title">Depots</div>
+        ${depotHTML}
+      </div>` : ''}
+      <div class="game-card-actions">
+        <button class="card-btn-generate" onclick="closeCard();switchTab('single');$('appIdInput').value='${appId}';generateSingle();">Lua Oluştur</button>
+        <button class="card-btn-close" onclick="closeCard()">Kapat</button>
+      </div>
+    </div>`;
+}
+
+function closeCard() {
+  $("gameCardOverlay").classList.remove("visible");
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeCard(); });
 
 // ===== EVENTS =====
 $("appIdInput").addEventListener("keydown", e => { if (e.key === "Enter") generateSingle(); });
