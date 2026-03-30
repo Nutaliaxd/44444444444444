@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuaForge — Steam Lua Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e17;
+    --surface: #111827;
+    --surface2: #1a2235;
+    --border: #1e293b;
+    --accent: #22d3ee;
+    --accent-dim: rgba(34,211,238,0.1);
+    --accent-glow: rgba(34,211,238,0.25);
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --text: #e2e8f0;
+    --text-dim: #64748b;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Subtle grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -1px;
+    text-shadow: 0 0 30px var(--accent-glow);
+  }
+
+  .logo span { color: var(--text-dim); font-weight: 400; }
+
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-top: 6px;
+    font-family: var(--mono);
+  }
+
+  /* Config Status */
+  .config-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .config-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .dot.ok { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.5); }
+  .dot.err { background: var(--red); box-shadow: 0 0 6px rgba(248,113,113,0.5); }
+
+  /* Upload Area */
+  .upload-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .upload-section h3 {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  .upload-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .upload-btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .upload-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dim);
+  }
+
+  .upload-btn.loaded {
+    border-color: var(--green);
+    border-style: solid;
+    color: var(--green);
+    background: rgba(52,211,153,0.05);
+  }
+
+  input[type="file"] { display: none; }
+
+  /* Input Area */
+  .input-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 12px;
+  }
+
+  .input-row input {
+    flex: 1;
+    padding: 12px 16px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-row input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-dim);
+  }
+
+  .input-row input::placeholder { color: var(--text-dim); }
+
+  .generate-btn {
+    padding: 12px 28px;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .generate-btn:hover {
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-1px);
+  }
+
+  .generate-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Log */
+  .log {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 24px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none;
+  }
+
+  .log.visible { display: block; }
+
+  .log-line {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--text-dim);
+  }
+
+  .log-line.info { color: var(--accent); }
+  .log-line.ok { color: var(--green); }
+  .log-line.err { color: var(--red); }
+
+  /* Output */
+  .output-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .output-section.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .output-title {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+  }
+
+  .output-actions { display: flex; gap: 8px; }
+
+  .action-btn {
+    padding: 6px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .action-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .output-code {
+    padding: 20px;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 500px;
+    overflow-y: auto;
+    background: var(--bg);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+
+  /* CORS warning */
+  .cors-note {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--yellow);
+    background: rgba(251,191,36,0.07);
+    border: 1px solid rgba(251,191,36,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 600px) {
+    .logo { font-size: 1.5rem; }
+    .input-row { flex-direction: column; }
+    .upload-btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div class="logo">LuaForge<span>-Web</span></div>
+    <div class="subtitle">Steam Lua Generator — GitHub Pages Edition</div>
+  </div>
+
+  <div class="config-panel">
+    <div class="config-item">
+      <div class="dot" id="dotDepot"></div>
+      <span>depotkeys.json</span>
+      <span id="depotCount" style="color:var(--text-dim)"></span>
+    </div>
+    <div class="config-item">
+      <div class="dot" id="dotToken"></div>
+      <span>appaccesstokens.json</span>
+      <span id="tokenCount" style="color:var(--text-dim)"></span>
+    </div>
+  </div>
+
+  <div class="upload-section">
+    <h3>// JSON Dosyalarını Yükle</h3>
+    <div class="upload-row">
+      <label class="upload-btn" id="depotLabel">
+        📁 depotkeys.json seç
+        <input type="file" id="depotFile" accept=".json">
+      </label>
+      <label class="upload-btn" id="tokenLabel">
+        📁 appaccesstokens.json seç
+        <input type="file" id="tokenFile" accept=".json">
+      </label>
+    </div>
+    <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);">
+      Veya dosyaları repo kökünde bırakın — otomatik yüklenir.
+    </div>
+  </div>
+
+  <div class="cors-note">
+    ⚠ SteamCMD API CORS desteklemiyor olabilir. Bu durumda bir CORS proxy
+    (ör. corsproxy.io) kullanılır. Kendi proxy'nizi koymak isterseniz
+    kodda <code>CORS_PROXY</code> değişkenini değiştirin.
+  </div>
+
+  <div class="input-section">
+    <div class="input-row">
+      <input type="text" id="appIdInput" placeholder="App ID gir..." autocomplete="off">
+      <button class="generate-btn" id="generateBtn" disabled>Generate</button>
+    </div>
+  </div>
+
+  <div class="log" id="logPanel"></div>
+
+  <div class="output-section" id="outputSection">
+    <div class="output-header">
+      <div class="output-title" id="outputTitle">output.lua</div>
+      <div class="output-actions">
+        <button class="action-btn" onclick="copyOutput()">Kopyala</button>
+        <button class="action-btn" onclick="downloadOutput()">İndir</button>
+      </div>
+    </div>
+    <div class="output-code" id="outputCode"></div>
+  </div>
+
+</div>
+
+<script>
+// ========== CONFIG ==========
+const CORS_PROXY = "https://corsproxy.io/?";
+const STEAMCMD_API = "https://api.steamcmd.net/v1/info/";
+
+// ========== STATE ==========
+let depotKeys = {};
+let accessTokens = {};
+let lastOutput = "";
+let lastAppId = "";
+
+// ========== DOM ==========
+const $ = id => document.getElementById(id);
+
+// ========== LOG ==========
+function log(msg, type = "") {
+  const panel = $("logPanel");
+  panel.classList.add("visible");
+  const line = document.createElement("div");
+  line.className = "log-line " + type;
+  line.textContent = msg;
+  panel.appendChild(line);
+  panel.scrollTop = panel.scrollHeight;
+}
+
+function clearLog() {
+  const panel = $("logPanel");
+  panel.innerHTML = "";
+  panel.classList.remove("visible");
+}
+
+// ========== FILE LOADING ==========
+function loadJSON(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try { resolve(JSON.parse(e.target.result)); }
+      catch { reject(new Error("Geçersiz JSON")); }
+    };
+    reader.onerror = () => reject(new Error("Dosya okunamadı"));
+    reader.readAsText(file);
+  });
+}
+
+async function tryAutoLoad(filename) {
+  try {
+    const resp = await fetch(filename);
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch { return null; }
+}
+
+function updateStatus() {
+  const dk = Object.keys(depotKeys).length;
+  const tk = Object.keys(accessTokens).length;
+
+  $("dotDepot").className = dk > 0 ? "dot ok" : "dot";
+  $("dotToken").className = tk > 0 ? "dot ok" : "dot";
+  $("depotCount").textContent = dk > 0 ? `(${dk})` : "";
+  $("tokenCount").textContent = tk > 0 ? `(${tk})` : "";
+  $("generateBtn").disabled = dk === 0;
+}
+
+// Upload handlers
+$("depotFile").addEventListener("change", async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    depotKeys = await loadJSON(file);
+    $("depotLabel").classList.add("loaded");
+    $("depotLabel").textContent = `✓ depotkeys.json (${Object.keys(depotKeys).length} key)`;
+    updateStatus();
+  } catch (err) {
+    alert("depotkeys.json okunamadı: " + err.message);
+  }
+});
+
+$("tokenFile").addEventListener("change", async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    accessTokens = await loadJSON(file);
+    $("tokenLabel").classList.add("loaded");
+    $("tokenLabel").textContent = `✓ appaccesstokens.json (${Object.keys(accessTokens).length} token)`;
+    updateStatus();
+  } catch (err) {
+    alert("appaccesstokens.json okunamadı: " + err.message);
+  }
+});
+
+// Auto-load from same directory
+(async () => {
+  const dk = await tryAutoLoad("depotkeys.json");
+  if (dk) {
+    depotKeys = dk;
+    $("depotLabel").classList.add("loaded");
+    $("depotLabel").textContent = `✓ depotkeys.json (${Object.keys(dk).length} key) [auto]`;
+  }
+
+  const tk = await tryAutoLoad("appaccesstokens.json");
+  if (tk) {
+    accessTokens = tk;
+    $("tokenLabel").classList.add("loaded");
+    $("tokenLabel").textContent = `✓ appaccesstokens.json (${Object.keys(tk).length} token) [auto]`;
+  }
+
+  updateStatus();
+})();
+
+// ========== API ==========
+async function getAppInfo(appId) {
+  // Try direct first, then CORS proxy
+  const urls = [
+    STEAMCMD_API + appId,
+    CORS_PROXY + encodeURIComponent(STEAMCMD_API + appId)
+  ];
+
+  for (const url of urls) {
+    try {
+      const resp = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (resp.ok) return await resp.json();
+    } catch { continue; }
+  }
+  return null;
+}
+
+// ========== GENERATE ==========
+function generateLua(appId, appInfo) {
+  const gameData = appInfo.data[String(appId)];
+  const gameName = gameData?.common?.name || "Unknown Game";
+  const depots = gameData?.depots || {};
+
+  const now = new Date().toISOString().replace("T", " ").substring(0, 16) + " UTC";
+
+  const lines = [];
+  lines.push(`-- ${gameName}`);
+  lines.push(`-- AppID ${appId} | Generated on ${now} | LuaForge-Web`);
+  lines.push("");
+  lines.push("-- Main Application");
+  lines.push(`addappid(${appId})`);
+  lines.push("");
+
+  const contentDepots = [];
+  const sharedDepots = [];
+  const dlcsWithContent = [];
+  const dlcsWithoutContent = [];
+
+  for (const [depotId, depotInfo] of Object.entries(depots)) {
+    if (!/^\d+$/.test(depotId)) continue;
+    const name = depotInfo.name || "";
+    const key = depotKeys[depotId];
+
+    if (depotInfo.depotfromapp) {
+      if (key) sharedDepots.push({ depotId, key, name, fromApp: depotInfo.depotfromapp });
+    } else if (depotInfo.dlcappid) {
+      const dlcId = depotInfo.dlcappid;
+      const token = accessTokens[String(dlcId)];
+      if (key) {
+        dlcsWithContent.push({ depotId, key, name, dlcId, token });
+      } else {
+        dlcsWithoutContent.push({ dlcId, name });
+      }
+    } else if (key) {
+      contentDepots.push({ depotId, key, name });
+    }
+  }
+
+  if (contentDepots.length) {
+    lines.push(`-- Content Depots (${contentDepots.length})`);
+    for (const d of contentDepots) {
+      const comment = d.name ? ` -- ${d.name}` : "";
+      lines.push(`addappid(${d.depotId}, 1, "${d.key}")${comment}`);
+    }
+    lines.push("");
+  }
+
+  if (sharedDepots.length) {
+    lines.push(`-- Shared Depots (${sharedDepots.length})`);
+    for (const d of sharedDepots) {
+      const comment = d.name ? ` -- ${d.name} (from ${d.fromApp})` : "";
+      lines.push(`addappid(${d.depotId}, 1, "${d.key}")${comment}`);
+    }
+    lines.push("");
+  }
+
+  if (dlcsWithContent.length) {
+    lines.push(`-- DLCs with Content (${dlcsWithContent.length})`);
+    for (const d of dlcsWithContent) {
+      if (d.token) lines.push(`addtoken(${d.dlcId}, "${d.token}")`);
+      lines.push(`addappid(${d.depotId}, 1, "${d.key}") -- ${d.name}`);
+    }
+    lines.push("");
+  }
+
+  if (dlcsWithoutContent.length) {
+    lines.push(`-- DLCs without Dedicated Depots (${dlcsWithoutContent.length})`);
+    for (const d of dlcsWithoutContent) {
+      const comment = d.name ? ` -- ${d.name}` : "";
+      lines.push(`addappid(${d.dlcId})${comment}`);
+    }
+    lines.push("");
+  }
+
+  return { lua: lines.join("\n"), gameName };
+}
+
+// ========== MAIN ACTION ==========
+async function generate() {
+  const appId = $("appIdInput").value.trim();
+  if (!appId || !/^\d+$/.test(appId)) {
+    log("[!] Geçerli bir App ID gir!", "err");
+    return;
+  }
+
+  clearLog();
+  $("outputSection").classList.remove("visible");
+  $("generateBtn").disabled = true;
+  $("generateBtn").textContent = "...";
+
+  log(`[*] SteamCMD API'den bilgi çekiliyor: ${appId}`, "info");
+
+  const appInfo = await getAppInfo(appId);
+
+  if (!appInfo || appInfo.status !== "success") {
+    log("[!] App bilgisi alınamadı! (CORS veya geçersiz ID)", "err");
+    $("generateBtn").disabled = false;
+    $("generateBtn").textContent = "Generate";
+    return;
+  }
+
+  const gameName = appInfo.data?.[String(appId)]?.common?.name || "Unknown";
+  log(`[+] Oyun bulundu: ${gameName}`, "ok");
+
+  const { lua } = generateLua(appId, appInfo);
+  lastOutput = lua;
+  lastAppId = appId;
+
+  $("outputTitle").textContent = `${appId}.lua`;
+  $("outputCode").textContent = lua;
+  $("outputSection").classList.add("visible");
+
+  log(`[+] Lua oluşturuldu — ${lua.split("\n").length} satır`, "ok");
+
+  $("generateBtn").disabled = false;
+  $("generateBtn").textContent = "Generate";
+}
+
+// ========== ACTIONS ==========
+function copyOutput() {
+  navigator.clipboard.writeText(lastOutput).then(() => {
+    const btn = document.querySelector(".action-btn");
+    btn.textContent = "Kopyalandı ✓";
+    setTimeout(() => btn.textContent = "Kopyala", 1500);
+  });
+}
+
+function downloadOutput() {
+  const blob = new Blob([lastOutput], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${lastAppId}.lua`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// ========== EVENTS ==========
+$("generateBtn").addEventListener("click", generate);
+$("appIdInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") generate();
+});
+</script>
+
+</body>
+</html>
