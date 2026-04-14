@@ -40,6 +40,8 @@
   .big-btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:8px}
   .big-btn:hover{background:var(--accent-hover)}
   .big-btn:disabled{background:#c5c9d0 !important;color:#fff !important;cursor:not-allowed}
+  .retry-btn{display:inline-block;background:var(--warn);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:10px}
+  .retry-btn:hover{opacity:.9}
 
   .warn{background:var(--warn-bg);border:1px solid #ffd591;color:var(--warn);padding:10px 12px;border-radius:6px;font-size:12px;text-align:left;margin-top:10px;line-height:1.5}
   .err{background:var(--danger-bg);border:1px solid #f5c2c2;color:var(--danger);padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-top:12px}
@@ -50,8 +52,11 @@
   .row button{background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
   .row button:hover{background:#f1f3f5}
   .row.done button{background:var(--success-bg);border-color:#b6e0c4;color:var(--success)}
+  .row.blocked button{background:var(--warn-bg);border-color:#ffd591;color:var(--warn)}
 
-  #status{margin-top:12px;font-size:12px;color:var(--muted);min-height:16px}
+  #status{margin-top:12px;font-size:13px;color:var(--muted);min-height:16px}
+  #status.ok{color:var(--success);font-weight:500}
+  #status.bad{color:var(--warn);font-weight:500}
   details{margin-top:16px}
   summary{color:var(--muted);font-size:12px;cursor:pointer}
 </style>
@@ -85,6 +90,7 @@
     <div id="permHelp" style="display:none"></div>
 
     <button id="openAll" class="big-btn" disabled>Tüm Mailleri Aç</button>
+    <div><button id="retryBlocked" class="retry-btn" style="display:none">Engellenenleri Tekrar Aç</button></div>
 
     <details>
       <summary>Listeyi göster / tek tek aç</summary>
@@ -157,7 +163,8 @@ Ad Soyad`,
     .map((r, i) => ({
       idx: i, to: r.email, row: r,
       subject: render(CAMPAIGN.subject, r),
-      body:    render(CAMPAIGN.body,    r)
+      body:    render(CAMPAIGN.body,    r),
+      opened: false
     }));
 
   $('count').textContent = items.length;
@@ -174,20 +181,24 @@ Ad Soyad`,
     list.appendChild(row);
   });
 
-  function markOpened(idx, ok) {
+  function markRow(idx, state) {
     const row = list.querySelector('.row[data-i="' + idx + '"]');
     if (!row) return;
-    row.classList.add('done');
-    row.querySelector('button').textContent = ok ? '✓ açıldı' : 'engellendi';
+    row.classList.remove('done', 'blocked');
+    const btn = row.querySelector('button');
+    if (state === 'opened') { row.classList.add('done'); btn.textContent = '✓ açıldı'; items[idx].opened = true; }
+    else if (state === 'blocked') { row.classList.add('blocked'); btn.textContent = 'engellendi'; items[idx].opened = false; }
+    else { btn.textContent = 'Aç'; items[idx].opened = false; }
   }
 
+  // Tek tek "Aç" butonları her zaman aktif (doğrudan user gesture ile çalışır)
   list.querySelectorAll('button').forEach((b) => {
     b.addEventListener('click', () => {
       const idx = parseInt(b.dataset.i, 10);
       const it = items[idx];
       if (!it) return;
       const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
-      markOpened(idx, !!w);
+      markRow(idx, (w && !w.closed) ? 'opened' : 'blocked');
     });
   });
 
@@ -202,6 +213,7 @@ Ad Soyad`,
   const permBtn = $('permBtn');
   const permHelp = $('permHelp');
   const openAllBtn = $('openAll');
+  const retryBtn = $('retryBlocked');
   let permissionGranted = false;
 
   function setPermGranted() {
@@ -221,33 +233,69 @@ Ad Soyad`,
     permHelp.className = 'warn';
     permHelp.innerHTML =
       '<b>Pop-up engellendi.</b><br>' +
-      'Adres çubuğunun sağındaki küçük ikona tıkla → <b>"Her zaman izin ver"</b>' +
-      ' seçeneğini seç → sonra <b>Test et</b> butonuna tekrar bas.' +
-      '<br><br><b>Brave kullanıyorsan:</b> Sol üstteki aslan ikonu → Shields DOWN.';
+      '• Adres çubuğunun sağ ucundaki küçük <b>engellenmiş pop-up ikonuna</b> tıkla.<br>' +
+      '• Açılan menüden <b>"Her zaman ' + location.host + ' için izin ver"</b> seç.<br>' +
+      '• Tamam\'a bas, sonra tekrar <b>Test et</b>.<br><br>' +
+      '<b>Brave:</b> Sol üstteki aslan ikonu → <b>Shields DOWN</b>.';
   }
 
   permBtn.addEventListener('click', () => {
-    const test = window.open('', '_blank', 'width=200,height=100,left=-1000,top=-1000');
-    if (test && !test.closed) {
-      try { test.close(); } catch(e) {}
-      setPermGranted();
-    } else {
+    // Gerçek URL'li bir test penceresi aç. about:blank bazı tarayıcılarda
+    // hep başarılı görünüyor, onun yerine görünür bir sayfa açıyoruz.
+    const test = window.open('about:blank', 'mail_launcher_test', 'width=200,height=100');
+    // Tarayıcı engellemişse null veya undefined döner.
+    // Bazı tarayıcılarda sahte window dönebilir; closed kontrolü ek güvence.
+    if (!test || test.closed || typeof test.closed === 'undefined') {
       setPermBlocked();
+      return;
     }
+    // Küçük bir gecikmeyle kapat; bazı tarayıcılar anında close'u engeller.
+    setTimeout(() => { try { test.close(); } catch(e) {} }, 200);
+    setPermGranted();
   });
+
+  function openBatch(targets) {
+    $('status').className = '';
+    $('status').textContent = 'Açılıyor... (0/' + targets.length + ')';
+    let opened = 0, blocked = 0, done = 0;
+
+    targets.forEach((it, i) => {
+      setTimeout(() => {
+        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
+        if (w && !w.closed) { markRow(it.idx, 'opened'); opened++; }
+        else { markRow(it.idx, 'blocked'); blocked++; }
+        done++;
+        $('status').textContent = 'Açılıyor... (' + done + '/' + targets.length + ')';
+
+        if (done === targets.length) {
+          const blockedItems = items.filter(x => !x.opened);
+          if (blockedItems.length === 0) {
+            $('status').className = 'ok';
+            $('status').textContent = '✓ Tüm sekmeler açıldı (' + opened + '/' + items.length + '). Her birinde "Gönder"e bas.';
+            retryBtn.style.display = 'none';
+          } else {
+            $('status').className = 'bad';
+            $('status').textContent = opened + '/' + items.length + ' açıldı · ' + blockedItems.length + ' engellendi. Tarayıcı pop-up iznini kısıtlamış olabilir.';
+            retryBtn.style.display = 'inline-block';
+            retryBtn.textContent = 'Engellenen ' + blockedItems.length + ' sekmeyi tekrar aç';
+          }
+        }
+      }, i * 300);
+    });
+  }
 
   openAllBtn.addEventListener('click', () => {
     if (!permissionGranted) return;
-    $('status').textContent = 'Açılıyor...';
-    items.forEach((it, i) => {
-      setTimeout(() => {
-        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
-        markOpened(it.idx, !!w);
-        if (i === items.length - 1) {
-          $('status').textContent = 'Tüm sekmeler açıldı. Her birinde "Gönder"e basmayı unutma.';
-        }
-      }, i * 250);
-    });
+    retryBtn.style.display = 'none';
+    // Tüm satırları sıfırla
+    items.forEach(it => markRow(it.idx, 'reset'));
+    openBatch(items);
+  });
+
+  retryBtn.addEventListener('click', () => {
+    const blockedItems = items.filter(x => !x.opened);
+    if (!blockedItems.length) { retryBtn.style.display = 'none'; return; }
+    openBatch(blockedItems);
   });
 })();
 </script>
