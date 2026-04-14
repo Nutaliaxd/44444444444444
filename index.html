@@ -19,65 +19,37 @@
   h1{font-size:22px;margin:0 0 8px;line-height:1.3}
   @media(min-width:640px){ body{padding:32px 20px} h1{font-size:26px} }
   .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px}
   @media(min-width:640px){ .card{padding:24px} }
-  .count{font-size:40px;font-weight:600;margin-bottom:4px}
-  .count-label{color:var(--muted);font-size:13px;margin-bottom:20px}
 
-  .step{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:8px;margin-bottom:10px;text-align:left}
-  .step.done{background:var(--success-bg);border-color:#b6e0c4}
-  .step.active{background:#eef4ff;border-color:#b6cdf5}
-  .step-num{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:#e3e5e8;color:#555;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
-  .step.done .step-num{background:var(--success);color:#fff}
-  .step.active .step-num{background:var(--accent);color:#fff}
-  .step-body{flex:1;font-size:13px;min-width:0}
-  .step-body b{display:block;margin-bottom:2px;font-size:14px}
-  .step-body .sub{color:var(--muted);font-size:12px}
+  .header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
+  .count{font-size:32px;font-weight:600;line-height:1}
+  .count-label{color:var(--muted);font-size:13px}
 
-  button.btn{display:inline-block;border:none;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
-  button.primary{background:var(--accent);color:#fff}
-  button.primary:hover{background:var(--accent-hover)}
-  button:disabled{background:#c5c9d0 !important;color:#fff !important;cursor:not-allowed;border-color:transparent !important}
+  .info{background:#eef4ff;border:1px solid #b6cdf5;color:#1e40af;padding:12px;border-radius:6px;font-size:13px;line-height:1.5;margin-bottom:16px}
 
-  .big-btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:14px 28px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:8px;width:100%;max-width:320px}
-  .big-btn:hover{background:var(--accent-hover)}
-  .big-btn:disabled{background:#c5c9d0 !important;color:#fff !important;cursor:not-allowed}
-  .retry-btn{display:inline-block;background:var(--warn);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:10px}
-  .retry-btn:hover{opacity:.9}
-  .link-btn{display:inline-block;background:transparent;color:var(--muted);border:none;font-size:12px;cursor:pointer;text-decoration:underline;margin-top:12px}
-
-  .warn{background:var(--warn-bg);border:1px solid #ffd591;color:var(--warn);padding:10px 12px;border-radius:6px;font-size:12px;text-align:left;margin-top:10px;line-height:1.5}
-  .err{background:var(--danger-bg);border:1px solid #f5c2c2;color:var(--danger);padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-top:12px}
-  .info{background:#eef4ff;border:1px solid #b6cdf5;color:#1e40af;padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-bottom:16px;line-height:1.5}
-
-  .list{margin-top:16px;text-align:left;border-top:1px solid var(--border)}
-  .row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid var(--border);font-size:13px;gap:10px}
-  .row .who{flex:1;min-width:0}
-  .row .who div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .row .who small{color:var(--muted);display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .row button{background:#fff;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap}
-  .row button:hover{background:#f1f3f5}
-  .row.done button{background:var(--success-bg);border-color:#b6e0c4;color:var(--success)}
-  .row.blocked button{background:var(--warn-bg);border-color:#ffd591;color:var(--warn)}
-
-  /* Mobil modda liste daha belirgin */
-  body.mobile .mobile-hide{display:none !important}
-  body.mobile .list{border:none;margin-top:0}
-  body.mobile .row{padding:14px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:#fff}
-  body.mobile .row button{background:var(--accent);color:#fff;border-color:var(--accent);padding:10px 16px;font-weight:500}
-  body.mobile .row.done{background:var(--success-bg);border-color:#b6e0c4}
-  body.mobile .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4}
-  body:not(.mobile) .desktop-only-hide{display:none !important}
-  body.mobile details{display:none}
-
-  #status{margin-top:12px;font-size:13px;color:var(--muted);min-height:16px}
-  #status.ok{color:var(--success);font-weight:500}
-  #status.bad{color:var(--warn);font-weight:500}
-  details{margin-top:16px}
-  summary{color:var(--muted);font-size:12px;cursor:pointer}
-
-  .progress{background:#f1f3f5;border-radius:20px;height:8px;overflow:hidden;margin:12px 0}
+  .progress{background:#f1f3f5;border-radius:20px;height:8px;overflow:hidden;margin-bottom:16px}
   .progress-bar{background:var(--success);height:100%;width:0;transition:width .3s}
+
+  .list{display:flex;flex-direction:column;gap:8px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border:1px solid var(--border);border-radius:8px;background:#fff;transition:background .15s,border-color .15s}
+  .row .who{flex:1;min-width:0}
+  .row .who .name{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .who .email{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row button{background:var(--accent);color:#fff;border:1px solid var(--accent);padding:10px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap;transition:background .15s}
+  .row button:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  .row.done{background:var(--success-bg);border-color:#b6e0c4}
+  .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4;font-weight:500}
+  .row.done button:hover{background:#f1f3f5}
+  .row.done .who .name::before{content:'✓ ';color:var(--success)}
+
+  .footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .status{font-size:13px;color:var(--muted);min-height:16px}
+  .status.ok{color:var(--success);font-weight:500}
+  .link-btn{background:transparent;color:var(--muted);border:none;font-size:12px;cursor:pointer;text-decoration:underline;padding:4px}
+  .link-btn:hover{color:var(--text)}
+
+  .done-banner{background:var(--success-bg);border:1px solid #b6e0c4;color:var(--success);padding:14px;border-radius:8px;text-align:center;font-weight:500;margin-bottom:16px;font-size:15px;display:none}
 </style>
 </head>
 <body>
@@ -86,52 +58,27 @@
   <p class="desc" id="desc"></p>
 
   <div class="card">
-    <div class="count" id="count">0</div>
-    <div class="count-label" id="countLabel">hazır mail</div>
-
-    <!-- Mobil yönlendirme -->
-    <div class="info desktop-only-hide">
-      <b>📱 Mobil kullanım:</b> Aşağıdaki her alıcı için <b>"Maili Aç"</b> butonuna dokun. Mail uygulaman açılır, mesaj ve konu hazır gelir. <b>"Gönder"</b>e basıp siteye geri dön, sıradakine geç. Gönderilenler yeşil işaretlenir, tarayıcıyı kapatsan bile kaydedilir.
+    <div class="header">
+      <div>
+        <div class="count"><span id="countDone">0</span> / <span id="countTotal">0</span></div>
+        <div class="count-label" id="countLabel">gönderildi</div>
+      </div>
     </div>
 
-    <div class="progress desktop-only-hide"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
 
-    <!-- Masaüstü akışı -->
-    <div class="mobile-hide">
-      <div class="step active" id="step1">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <b>Pop-up iznini ver</b>
-          <div class="sub">Tarayıcı varsayılan olarak çoklu sekme açılmasını engeller.</div>
-        </div>
-        <button id="permBtn" class="btn primary">Test et</button>
-      </div>
+    <div class="done-banner" id="doneBanner">🎉 Tebrikler! Tüm mailler gönderildi. Teşekkürler!</div>
 
-      <div class="step" id="step2">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <b>Mailleri aç</b>
-          <div class="sub">Her alıcı için Gmail'de ayrı taslak açılır. İmza bölümünü düzenlemeyi unutma.</div>
-        </div>
-      </div>
-
-      <div id="permHelp" style="display:none"></div>
-
-      <button id="openAll" class="big-btn" disabled>Tüm Mailleri Aç</button>
-      <div><button id="retryBlocked" class="retry-btn" style="display:none">Engellenenleri Tekrar Aç</button></div>
+    <div class="info" id="howto">
+      <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.
     </div>
 
-    <details class="mobile-hide">
-      <summary>Listeyi göster / tek tek aç</summary>
-      <div class="list" id="list"></div>
-    </details>
+    <div class="list" id="list"></div>
 
-    <!-- Mobilde liste doğrudan görünür -->
-    <div class="list desktop-only-hide" id="listMobile"></div>
-
-    <div id="status"></div>
-
-    <button id="resetProgress" class="link-btn desktop-only-hide" style="display:none">İlerlemeyi sıfırla</button>
+    <div class="footer">
+      <div class="status" id="status"></div>
+      <button id="resetProgress" class="link-btn" style="display:none">İlerlemeyi sıfırla</button>
+    </div>
   </div>
 </div>
 
@@ -142,7 +89,7 @@
 const CAMPAIGN = {
   title: "TADC: The Last Act — Türkiye Dağıtım Talebi",
 
-  description: "Aşağıdaki butona bastığınızda Türkiye'deki 10 film dağıtım şirketine aynı maili ayrı ayrı göndermek için Gmail'de 10 ayrı taslak açılır. Her sekmede mesajı kontrol edip 'Gönder'e basmanız yeterlidir. Göndermeden önce mailin sonundaki [isim/soyisim] ve [Mail Adresim] alanlarını kendi bilgilerinizle değiştirmeyi unutmayın.",
+  description: "Türkiye'deki 10 film dağıtım şirketine aynı maili göndermek için aşağıdaki listedeki her butona tek tek bas. Göndermeden önce mailin sonundaki [isim/soyisim] ve [Mail Adresim] alanlarını kendi bilgilerinle değiştirmeyi unutma.",
 
   subject: "Dağıtım Talebi: The Amazing Digital Circus: The Last Act — Türkiye'de Kanıtlanmış Hayran Kitlesi",
 
@@ -195,12 +142,12 @@ Mail Adresim: `,
   const esc = (s) => (s ?? '').toString().replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // ---------- Cihaz tespiti ----------
-  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
-                   (window.matchMedia && window.matchMedia('(max-width: 768px)').matches && 'ontouchstart' in window);
-  if (isMobile) document.body.classList.add('mobile');
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if (isMobile) {
+    document.querySelector('.desktop-text').style.display = 'none';
+    document.querySelector('.mobile-text').style.display = '';
+  }
 
-  // ---------- URL üretimi ----------
   function gmailUrl(to, su, body) {
     return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) +
       '&su=' + encodeURIComponent(su) + '&body=' + encodeURIComponent(body);
@@ -212,15 +159,8 @@ Mail Adresim: `,
   }
   const composeUrl = isMobile ? mailtoUrl : gmailUrl;
 
-  function showError(msg) {
-    const el = document.createElement('div');
-    el.className = 'err';
-    el.innerHTML = '<b>Hata:</b> ' + esc(msg);
-    document.querySelector('.card').appendChild(el);
-  }
-
   if (typeof CAMPAIGN === 'undefined' || !CAMPAIGN) {
-    showError('CAMPAIGN tanımlı değil.');
+    $('status').textContent = 'Hata: CAMPAIGN tanımlı değil.';
     return;
   }
 
@@ -237,9 +177,9 @@ Mail Adresim: `,
       opened: false
     }));
 
-  $('count').textContent = items.length;
+  $('countTotal').textContent = items.length;
 
-  // ---------- Mobilde kalıcı durum ----------
+  // ---------- Kalıcı ilerleme ----------
   const STORAGE_KEY = 'tadc-mail-progress-v1';
   function loadProgress() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
@@ -248,200 +188,90 @@ Mail Adresim: `,
   function saveProgress(p) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch {}
   }
-  if (isMobile) {
-    const p = loadProgress();
-    items.forEach(it => { if (p[it.to]) it.opened = true; });
-  }
+  const progress = loadProgress();
+  items.forEach(it => { if (progress[it.to]) it.opened = true; });
 
-  // ---------- Liste oluşturma ----------
-  const desktopList = $('list');
-  const mobileList = $('listMobile');
-  const listContainer = isMobile ? mobileList : desktopList;
-
+  // ---------- Liste render ----------
+  const list = $('list');
   items.forEach((it) => {
     const row = document.createElement('div');
     row.className = 'row' + (it.opened ? ' done' : '');
     row.dataset.i = it.idx;
     row.innerHTML =
-      '<div class="who"><div>' + esc(it.row.isim || it.to) + '</div>' +
-      '<small>' + esc(it.to) + '</small></div>' +
+      '<div class="who">' +
+        '<div class="name">' + esc(it.row.isim || it.to) + '</div>' +
+        '<div class="email">' + esc(it.to) + '</div>' +
+      '</div>' +
       '<button data-i="' + it.idx + '">' +
-      (it.opened ? '✓ gönderildi' : (isMobile ? 'Maili Aç' : 'Aç')) +
+        (it.opened ? 'Tekrar aç' : 'Maili Aç') +
       '</button>';
-    listContainer.appendChild(row);
-    // Masaüstünde eski davranışı korumak için aynı satırı detay içinde de oluşturmaya gerek yok —
-    // sadece aktif liste kullanılıyor.
+    list.appendChild(row);
   });
 
-  function markRow(idx, state) {
-    const row = listContainer.querySelector('.row[data-i="' + idx + '"]');
+  function markRow(idx, opened) {
+    const row = list.querySelector('.row[data-i="' + idx + '"]');
     if (!row) return;
-    row.classList.remove('done', 'blocked');
     const btn = row.querySelector('button');
-    if (state === 'opened') {
+    items[idx].opened = opened;
+    if (opened) {
       row.classList.add('done');
-      btn.textContent = isMobile ? '✓ gönderildi' : '✓ açıldı';
-      items[idx].opened = true;
-    } else if (state === 'blocked') {
-      row.classList.add('blocked');
-      btn.textContent = 'engellendi';
-      items[idx].opened = false;
+      btn.textContent = 'Tekrar aç';
     } else {
-      btn.textContent = isMobile ? 'Maili Aç' : 'Aç';
-      items[idx].opened = false;
+      row.classList.remove('done');
+      btn.textContent = 'Maili Aç';
     }
-    if (isMobile) {
-      const p = loadProgress();
-      if (items[idx].opened) p[items[idx].to] = Date.now();
-      else delete p[items[idx].to];
-      saveProgress(p);
-      updateMobileProgress();
-    }
+    const p = loadProgress();
+    if (opened) p[items[idx].to] = Date.now();
+    else delete p[items[idx].to];
+    saveProgress(p);
+    updateCounters();
   }
 
-  function updateMobileProgress() {
+  function updateCounters() {
     const done = items.filter(x => x.opened).length;
+    $('countDone').textContent = done;
     const pct = items.length ? Math.round(done / items.length * 100) : 0;
-    const bar = $('progressBar');
-    if (bar) bar.style.width = pct + '%';
-    $('countLabel').textContent = isMobile ? (done + ' / ' + items.length + ' gönderildi') : 'hazır mail';
-    const reset = $('resetProgress');
-    if (reset) reset.style.display = (done > 0) ? 'inline-block' : 'none';
+    $('progressBar').style.width = pct + '%';
+    $('resetProgress').style.display = done > 0 ? 'inline-block' : 'none';
+    const banner = $('doneBanner');
     if (done === items.length && done > 0) {
-      $('status').className = 'ok';
-      $('status').textContent = '🎉 Tebrikler! Tüm mailler gönderildi.';
+      banner.style.display = 'block';
+      $('howto').style.display = 'none';
     } else {
-      $('status').className = '';
-      $('status').textContent = '';
+      banner.style.display = 'none';
+      $('howto').style.display = 'block';
     }
   }
 
-  // Liste butonlarına click/tap
-  listContainer.querySelectorAll('button').forEach((b) => {
+  list.querySelectorAll('button').forEach((b) => {
     b.addEventListener('click', () => {
       const idx = parseInt(b.dataset.i, 10);
       const it = items[idx];
       if (!it) return;
-
+      const url = composeUrl(it.to, it.subject, it.body);
       if (isMobile) {
-        // mailto: link — navigation ile aç. window.open bazı mobil tarayıcılarda
-        // mailto'yu düşürür. Geçici bir <a> elementi kullanmak en güvenilir yol.
+        // mailto: mobile — safer via anchor click
         const a = document.createElement('a');
-        a.href = composeUrl(it.to, it.subject, it.body);
+        a.href = url;
         a.rel = 'noopener';
         a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
         a.remove();
-        // Kullanıcı mail uygulamasına geçti; geri dönünce tıkladı sayalım.
-        markRow(idx, 'opened');
       } else {
-        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
-        markRow(idx, (w && !w.closed) ? 'opened' : 'blocked');
+        window.open(url, '_blank', 'noopener');
       }
+      markRow(idx, true);
     });
   });
 
-  if (isMobile) {
-    updateMobileProgress();
-    $('resetProgress').addEventListener('click', () => {
-      if (!confirm('İlerlemeyi sıfırla?')) return;
-      localStorage.removeItem(STORAGE_KEY);
-      items.forEach(it => markRow(it.idx, 'reset'));
-      updateMobileProgress();
-    });
-    return; // Masaüstü akışını mobil modda çalıştırma
-  }
-
-  if (!items.length) {
-    $('status').textContent = 'Listede geçerli alıcı yok.';
-    $('permBtn').disabled = true;
-    return;
-  }
-
-  // ---------- Masaüstü: pop-up izin + toplu açma ----------
-  const step1 = $('step1'), step2 = $('step2');
-  const permBtn = $('permBtn');
-  const permHelp = $('permHelp');
-  const openAllBtn = $('openAll');
-  const retryBtn = $('retryBlocked');
-  let permissionGranted = false;
-
-  function setPermGranted() {
-    permissionGranted = true;
-    step1.classList.remove('active');
-    step1.classList.add('done');
-    step2.classList.add('active');
-    permBtn.textContent = '✓ İzin verildi';
-    permBtn.disabled = true;
-    openAllBtn.disabled = false;
-    permHelp.style.display = 'none';
-    permHelp.innerHTML = '';
-  }
-
-  function setPermBlocked() {
-    permHelp.style.display = 'block';
-    permHelp.className = 'warn';
-    permHelp.innerHTML =
-      '<b>Pop-up engellendi.</b><br>' +
-      '• Adres çubuğunun sağ ucundaki küçük <b>engellenmiş pop-up ikonuna</b> tıkla.<br>' +
-      '• Açılan menüden <b>"Her zaman ' + location.host + ' için izin ver"</b> seç.<br>' +
-      '• Tamam\'a bas, sonra tekrar <b>Test et</b>.<br><br>' +
-      '<b>Brave:</b> Sol üstteki aslan ikonu → <b>Shields DOWN</b>.';
-  }
-
-  permBtn.addEventListener('click', () => {
-    const test = window.open('about:blank', 'mail_launcher_test', 'width=200,height=100');
-    if (!test || test.closed || typeof test.closed === 'undefined') {
-      setPermBlocked();
-      return;
-    }
-    setTimeout(() => { try { test.close(); } catch(e) {} }, 200);
-    setPermGranted();
+  $('resetProgress').addEventListener('click', () => {
+    if (!confirm('İlerleme sıfırlansın mı? Hangilerini gönderdiğin kaydı silinir (gerçek mailler zaten gönderilmiştir, onları etkilemez).')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    items.forEach(it => markRow(it.idx, false));
   });
 
-  function openBatch(targets) {
-    $('status').className = '';
-    $('status').textContent = 'Açılıyor... (0/' + targets.length + ')';
-    let opened = 0, blocked = 0, done = 0;
-
-    targets.forEach((it, i) => {
-      setTimeout(() => {
-        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
-        if (w && !w.closed) { markRow(it.idx, 'opened'); opened++; }
-        else { markRow(it.idx, 'blocked'); blocked++; }
-        done++;
-        $('status').textContent = 'Açılıyor... (' + done + '/' + targets.length + ')';
-
-        if (done === targets.length) {
-          const blockedItems = items.filter(x => !x.opened);
-          if (blockedItems.length === 0) {
-            $('status').className = 'ok';
-            $('status').textContent = '✓ Tüm sekmeler açıldı (' + opened + '/' + items.length + '). Her birinde "Gönder"e bas.';
-            retryBtn.style.display = 'none';
-          } else {
-            $('status').className = 'bad';
-            $('status').textContent = opened + '/' + items.length + ' açıldı · ' + blockedItems.length + ' engellendi.';
-            retryBtn.style.display = 'inline-block';
-            retryBtn.textContent = 'Engellenen ' + blockedItems.length + ' sekmeyi tekrar aç';
-          }
-        }
-      }, i * 300);
-    });
-  }
-
-  openAllBtn.addEventListener('click', () => {
-    if (!permissionGranted) return;
-    retryBtn.style.display = 'none';
-    items.forEach(it => markRow(it.idx, 'reset'));
-    openBatch(items);
-  });
-
-  retryBtn.addEventListener('click', () => {
-    const blockedItems = items.filter(x => !x.opened);
-    if (!blockedItems.length) { retryBtn.style.display = 'none'; return; }
-    openBatch(blockedItems);
-  });
+  updateCounters();
 })();
 </script>
 </body>
