@@ -1,724 +1,111 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LuaForge — Steam Lua Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #0a0e17;
-    --surface: #111827;
-    --surface2: #1a2235;
-    --border: #1e293b;
-    --accent: #22d3ee;
-    --accent-dim: rgba(34,211,238,0.1);
-    --accent-glow: rgba(34,211,238,0.25);
-    --green: #34d399;
-    --red: #f87171;
-    --yellow: #fbbf24;
-    --orange: #fb923c;
-    --text: #e2e8f0;
-    --text-dim: #64748b;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Space Grotesk', sans-serif;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(34,211,238,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(34,211,238,0.03) 1px, transparent 1px);
-    background-size: 60px 60px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
-  }
-
-  .header { text-align: center; margin-bottom: 32px; }
-  .logo { font-family: var(--mono); font-size: 2rem; font-weight: 700; color: var(--accent); letter-spacing: -1px; text-shadow: 0 0 30px var(--accent-glow); }
-  .logo span { color: var(--text-dim); font-weight: 400; }
-  .subtitle { color: var(--text-dim); font-size: 0.9rem; margin-top: 6px; font-family: var(--mono); }
-
-  /* Tabs */
-  .tabs {
-    display: flex; gap: 4px; margin-bottom: 24px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 4px;
-  }
-  .tab {
-    flex: 1; padding: 12px 16px; background: transparent; border: none; border-radius: 8px;
-    color: var(--text-dim); font-family: var(--mono); font-size: 0.85rem; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active { background: var(--accent); color: var(--bg); box-shadow: 0 0 16px var(--accent-glow); }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
-
-  /* Config */
-  .config-panel {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 16px 20px; margin-bottom: 24px; display: flex; gap: 20px; flex-wrap: wrap; align-items: center;
-  }
-  .config-item { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 0.8rem; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
-  .dot.ok { background: var(--green); box-shadow: 0 0 6px rgba(52,211,153,0.5); }
-
-  /* Upload */
-  .upload-section {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px; margin-bottom: 24px;
-  }
-  .upload-section h3 { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 14px; }
-  .upload-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-  .upload-btn {
-    flex: 1; min-width: 200px; padding: 12px 16px; background: var(--surface2);
-    border: 1px dashed var(--border); border-radius: 8px; color: var(--text-dim);
-    font-family: var(--mono); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; text-align: center;
-  }
-  .upload-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-  .upload-btn.loaded { border-color: var(--green); border-style: solid; color: var(--green); background: rgba(52,211,153,0.05); }
-  input[type="file"] { display: none; }
-
-  /* Input */
-  .input-section {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px; margin-bottom: 24px;
-  }
-  .input-row { display: flex; gap: 12px; }
-  .input-row input {
-    flex: 1; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 1rem;
-    outline: none; transition: border-color 0.2s;
-  }
-  .input-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
-  .input-row input::placeholder { color: var(--text-dim); }
-
-  .generate-btn {
-    padding: 12px 28px; background: var(--accent); color: var(--bg); border: none;
-    border-radius: 8px; font-family: var(--mono); font-size: 0.9rem; font-weight: 700;
-    cursor: pointer; transition: all 0.2s; white-space: nowrap;
-  }
-  .generate-btn:hover { box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-1px); }
-  .generate-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-  /* Log */
-  .log {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 20px; margin-bottom: 24px; max-height: 250px; overflow-y: auto; display: none;
-  }
-  .log.visible { display: block; }
-  .log-line { font-family: var(--mono); font-size: 0.78rem; line-height: 1.7; color: var(--text-dim); }
-  .log-line.info { color: var(--accent); }
-  .log-line.ok { color: var(--green); }
-  .log-line.err { color: var(--red); }
-
-  /* Output */
-  .output-section {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    overflow: hidden; display: none;
-  }
-  .output-section.visible { display: block; }
-  .output-header {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 20px; border-bottom: 1px solid var(--border);
-  }
-  .output-title { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); }
-  .output-actions { display: flex; gap: 8px; }
-  .action-btn {
-    padding: 6px 14px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 6px; color: var(--text-dim); font-family: var(--mono); font-size: 0.75rem;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .action-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .output-code {
-    padding: 20px; font-family: var(--mono); font-size: 0.8rem; line-height: 1.6;
-    color: var(--text); white-space: pre-wrap; word-break: break-all;
-    max-height: 500px; overflow-y: auto; background: var(--bg);
-  }
-
-  .note-box {
-    font-family: var(--mono); font-size: 0.75rem; border-radius: 8px;
-    padding: 12px 16px; margin-bottom: 24px; line-height: 1.6;
-  }
-  .note-box.yellow { color: var(--yellow); background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.2); }
-
-  /* Search feature */
-  .search-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px; margin-bottom: 24px;
-  }
-  .search-box h3 { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); margin-bottom: 14px; }
-  .search-input {
-    width: 100%; padding: 12px 16px; background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; color: var(--text); font-family: var(--mono); font-size: 1rem;
-    outline: none; transition: border-color 0.2s; margin-bottom: 16px;
-  }
-  .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
-  .search-input::placeholder { color: var(--text-dim); }
-
-  .search-stats {
-    font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim);
-    margin-bottom: 12px; display: none;
-  }
-  .search-stats.visible { display: block; }
-
-  .search-results {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .search-result-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 14px; border-radius: 8px; margin-bottom: 4px;
-    font-family: var(--mono); font-size: 0.8rem;
-    background: var(--surface2); border: 1px solid transparent;
-    transition: all 0.15s; cursor: pointer;
-  }
-  .search-result-item:hover {
-    border-color: var(--accent); background: var(--accent-dim);
-  }
-  .result-id { color: var(--accent); font-weight: 600; min-width: 80px; }
-  .result-key {
-    color: var(--text-dim); font-size: 0.7rem;
-    max-width: 350px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
-  .result-badge {
-    font-size: 0.65rem; padding: 2px 8px; border-radius: 4px;
-    background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2);
-    white-space: nowrap;
-  }
-  .result-badge.token {
-    background: rgba(251,191,36,0.1); color: var(--yellow); border-color: rgba(251,191,36,0.2);
-  }
-
-  .no-results {
-    font-family: var(--mono); font-size: 0.8rem; color: var(--text-dim);
-    text-align: center; padding: 24px;
-  }
-
-  /* Game Info Card */
-  .game-card-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    padding: 20px;
-  }
-  .game-card-overlay.visible { opacity: 1; pointer-events: all; }
-
-  .game-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    width: 100%; max-width: 440px; overflow: hidden;
-    transform: translateY(10px) scale(0.97); transition: transform 0.2s;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-  }
-  .game-card-overlay.visible .game-card { transform: translateY(0) scale(1); }
-
-  .game-card-banner {
-    width: 100%; height: 180px; object-fit: cover; display: block;
-    background: var(--surface2);
-  }
-
-  .game-card-body { padding: 20px; }
-
-  .game-card-title {
-    font-family: var(--sans); font-size: 1.15rem; font-weight: 700;
-    color: var(--text); margin-bottom: 4px;
-  }
-
-  .game-card-meta {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; margin-bottom: 16px;
-  }
-
-  .game-card-tag {
-    font-family: var(--mono); font-size: 0.7rem; padding: 4px 10px;
-    border-radius: 6px; background: var(--surface2); color: var(--text-dim);
-    border: 1px solid var(--border);
-  }
-  .game-card-tag.accent { color: var(--accent); border-color: rgba(34,211,238,0.3); background: var(--accent-dim); }
-  .game-card-tag.green { color: var(--green); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.08); }
-  .game-card-tag.yellow { color: var(--yellow); border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.08); }
-
-  .game-card-depots {
-    margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border);
-  }
-  .game-card-depots-title {
-    font-family: var(--mono); font-size: 0.75rem; color: var(--accent); margin-bottom: 8px;
-  }
-  .game-card-depot-row {
-    font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
-    padding: 4px 0; display: flex; justify-content: space-between;
-  }
-  .game-card-depot-row .depot-name { color: var(--text); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .game-card-depot-row .depot-status { color: var(--green); }
-  .game-card-depot-row .depot-status.missing { color: var(--red); }
-
-  .game-card-actions {
-    display: flex; gap: 8px; margin-top: 16px;
-  }
-  .game-card-actions button {
-    flex: 1; padding: 10px; border-radius: 8px; font-family: var(--mono);
-    font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none;
-  }
-  .card-btn-generate { background: var(--accent); color: var(--bg); }
-  .card-btn-generate:hover { box-shadow: 0 0 16px var(--accent-glow); }
-  .card-btn-close { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border) !important; }
-  .card-btn-close:hover { color: var(--text); }
-
-  .game-card-loading {
-    padding: 40px; text-align: center; font-family: var(--mono);
-    font-size: 0.85rem; color: var(--text-dim);
-  }
-  .game-card-loading .spinner {
-    display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border);
-    border-top-color: var(--accent); border-radius: 50%;
-    animation: spin 0.8s linear infinite; margin-bottom: 12px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
-
-  @media (max-width: 600px) {
-    .logo { font-size: 1.5rem; }
-    .input-row { flex-direction: column; }
-    .upload-btn { min-width: 100%; }
-    .result-key { max-width: 150px; }
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mail Launcher</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --border: #e3e5e8;
+      --text: #1f2328;
+      --muted: #6b7280;
+      --accent: #1a73e8;
+      --accent-hover: #1558b0;
+      --success: #0f9d58;
+      --danger: #d93025;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg); color: var(--text);
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px; margin-bottom: 16px;
+    }
+    .card h2 { font-size: 14px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+    label { display: block; font-size: 12px; color: var(--muted); margin: 8px 0 4px; }
+    input, textarea {
+      width: 100%; font-size: 13px; padding: 8px 10px;
+      border: 1px solid var(--border); border-radius: 6px;
+      font-family: inherit; background: #fff; color: var(--text);
+    }
+    textarea { resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; }
+    .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    button {
+      border: 1px solid var(--border); background: #fff; color: var(--text);
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500;
+    }
+    button:hover { background: #f1f3f5; }
+    button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.danger { color: var(--danger); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    th { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: .5px; }
+    td.actions { width: 140px; white-space: nowrap; }
+    .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eef2ff; color: #3730a3; }
+    .opened { background: #e7f5ee; color: var(--success); }
+    .preview { background: #f1f3f5; border-radius: 6px; padding: 10px; font-size: 12px; white-space: pre-wrap; margin-top: 8px; max-height: 200px; overflow: auto; }
+    details { margin-top: 8px; }
+    summary { cursor: pointer; color: var(--muted); font-size: 12px; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .small { font-size: 12px; color: var(--muted); }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Mail Launcher</h1>
+    <div class="sub">Her alıcı için Gmail'de ayrı compose sekmesi açar. Sen sadece "Gönder"e basarsın.</div>
 
-<div class="container">
-
-  <div class="header">
-    <div class="logo">LuaForge<span>-Web</span></div>
-    <div class="subtitle">Steam Lua Generator — GitHub Pages Edition</div>
-  </div>
-
-  <div class="config-panel">
-    <div class="config-item">
-      <div class="dot" id="dotDepot"></div>
-      <span>depotkeys.json</span>
-      <span id="depotCount" style="color:var(--text-dim)"></span>
-    </div>
-    <div class="config-item">
-      <div class="dot" id="dotToken"></div>
-      <span>appaccesstokens.json</span>
-      <span id="tokenCount" style="color:var(--text-dim)"></span>
-    </div>
-  </div>
-
-  <div class="upload-section">
-    <h3>// JSON Dosyalarını Yükle</h3>
-    <div class="upload-row">
-      <label class="upload-btn" id="depotLabel">
-        depotkeys.json seç
-        <input type="file" id="depotFile" accept=".json">
-      </label>
-      <label class="upload-btn" id="tokenLabel">
-        appaccesstokens.json seç
-        <input type="file" id="tokenFile" accept=".json">
-      </label>
-    </div>
-    <div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);">
-      Veya dosyaları repo kökünde bırakın — otomatik yüklenir.
-    </div>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('single')">Lua Generator</button>
-    <button class="tab" onclick="switchTab('search')">Depot Key Arama</button>
-  </div>
-
-  <!-- Tab 1: Single Game -->
-  <div class="tab-content active" id="tab-single">
-    <div class="note-box yellow">
-      ⚠ SteamCMD API CORS desteklemiyor olabilir. Bu durumda otomatik olarak
-      corsproxy.io kullanılır. Kendi proxy'nizi koymak isterseniz kodda
-      <code>CORS_PROXY</code> değişkenini değiştirin.
-    </div>
-    <div class="input-section">
-      <div class="input-row">
-        <input type="text" id="appIdInput" placeholder="App ID gir..." autocomplete="off">
-        <button class="generate-btn" id="generateBtn" disabled onclick="generateSingle()">Generate</button>
+    <div class="card">
+      <div class="flex-between">
+        <h2 style="margin:0">1 · Şablon</h2>
+        <span class="small">Değişkenler: <code>{isim}</code>, <code>{email}</code> ve CSV sütun adları</span>
       </div>
+      <label>Konu</label>
+      <input id="subject" type="text" placeholder="Merhaba {isim}" />
+      <label>Mesaj gövdesi</label>
+      <textarea id="body" rows="8" placeholder="Sayın {isim},&#10;&#10;..."></textarea>
     </div>
-    <div class="log" id="logPanel"></div>
-    <div class="output-section" id="outputSection">
-      <div class="output-header">
-        <div class="output-title" id="outputTitle">output.lua</div>
-        <div class="output-actions">
-          <button class="action-btn" onclick="copyOutput()">Kopyala</button>
-          <button class="action-btn" onclick="downloadOutput()">İndir</button>
+
+    <div class="card">
+      <div class="flex-between">
+        <h2 style="margin:0">2 · Alıcılar (CSV)</h2>
+        <span class="small">İlk satır başlık olmalı, <code>email</code> sütunu zorunlu</span>
+      </div>
+      <textarea id="csv" rows="7" placeholder="email,isim,sirket&#10;ali@ornek.com,Ali,Acme&#10;ayse@ornek.com,Ayşe,Globex"></textarea>
+      <div class="row" style="margin-top:8px;">
+        <button id="parse" class="primary">Listeyi işle</button>
+        <button id="loadConfig">config.json'dan yükle</button>
+        <button id="reset" class="danger">Sıfırla</button>
+      </div>
+      <div class="hint" id="parseStatus"></div>
+    </div>
+
+    <div class="card" id="resultCard" style="display:none">
+      <div class="flex-between">
+        <h2 style="margin:0">3 · Gönderim</h2>
+        <div class="row">
+          <button id="openAll" class="primary">Tümünü Gmail'de Aç</button>
+          <button id="copyList">Listeyi kopyala</button>
         </div>
       </div>
-      <div class="output-code" id="outputCode"></div>
+      <div class="hint">Tarayıcı ilk açılışta popup'ları engelleyebilir. Adres çubuğundaki bildirimden bu siteye <b>"pop-up'lara izin ver"</b> demen yeterli.</div>
+      <table id="tbl">
+        <thead><tr><th>#</th><th>Alıcı</th><th>Önizleme</th><th></th><th class="actions">İşlem</th></tr></thead>
+        <tbody></tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Tab 2: Depot Key Search -->
-  <div class="tab-content" id="tab-search">
-    <div class="search-box">
-      <h3>// Depot Key & Token Arama</h3>
-      <input type="text" class="search-input" id="searchInput" placeholder="Depot ID veya key ile ara..." autocomplete="off" oninput="doSearch()">
-      <div class="search-stats" id="searchStats"></div>
-      <div class="search-results" id="searchResults">
-        <div class="no-results" id="searchEmpty">JSON dosyalarını yükleyin, ardından arama yapabilirsiniz.</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Game Info Card Overlay -->
-  <div class="game-card-overlay" id="gameCardOverlay" onclick="if(event.target===this)closeCard()">
-    <div class="game-card" id="gameCard"></div>
-  </div>
-
-</div>
-
-<script>
-const CORS_PROXY = "https://corsproxy.io/?";
-const STEAMCMD_API = "https://api.steamcmd.net/v1/info/";
-
-let depotKeys = {};
-let accessTokens = {};
-let lastOutput = "";
-let lastFilename = "output.lua";
-
-const $ = id => document.getElementById(id);
-
-// ===== TABS =====
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', (tab === 'single' && i === 0) || (tab === 'search' && i === 1));
-  });
-  $('tab-single').classList.toggle('active', tab === 'single');
-  $('tab-search').classList.toggle('active', tab === 'search');
-  if (tab === 'search') refreshSearchView();
-}
-
-// ===== LOG =====
-function log(msg, type = "") {
-  const panel = $("logPanel");
-  panel.classList.add("visible");
-  const line = document.createElement("div");
-  line.className = "log-line " + type;
-  line.textContent = msg;
-  panel.appendChild(line);
-  panel.scrollTop = panel.scrollHeight;
-}
-
-function clearLog() {
-  $("logPanel").innerHTML = "";
-  $("logPanel").classList.remove("visible");
-  $("outputSection").classList.remove("visible");
-}
-
-// ===== FILE LOADING =====
-function loadJSON(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = e => { try { resolve(JSON.parse(e.target.result)); } catch { reject(new Error("Geçersiz JSON")); } };
-    reader.onerror = () => reject(new Error("Dosya okunamadı"));
-    reader.readAsText(file);
-  });
-}
-
-async function tryAutoLoad(filename) {
-  try { const r = await fetch(filename); if (!r.ok) return null; return await r.json(); } catch { return null; }
-}
-
-function updateStatus() {
-  const dk = Object.keys(depotKeys).length;
-  const tk = Object.keys(accessTokens).length;
-  $("dotDepot").className = dk > 0 ? "dot ok" : "dot";
-  $("dotToken").className = tk > 0 ? "dot ok" : "dot";
-  $("depotCount").textContent = dk > 0 ? `(${dk})` : "";
-  $("tokenCount").textContent = tk > 0 ? `(${tk})` : "";
-  $("generateBtn").disabled = dk === 0;
-}
-
-$("depotFile").addEventListener("change", async e => {
-  const f = e.target.files[0]; if (!f) return;
-  try { depotKeys = await loadJSON(f); $("depotLabel").classList.add("loaded"); $("depotLabel").textContent = `✓ depotkeys.json (${Object.keys(depotKeys).length} key)`; updateStatus(); refreshSearchView(); }
-  catch (err) { alert("depotkeys.json okunamadı: " + err.message); }
-});
-$("tokenFile").addEventListener("change", async e => {
-  const f = e.target.files[0]; if (!f) return;
-  try { accessTokens = await loadJSON(f); $("tokenLabel").classList.add("loaded"); $("tokenLabel").textContent = `✓ appaccesstokens.json (${Object.keys(accessTokens).length} token)`; updateStatus(); refreshSearchView(); }
-  catch (err) { alert("appaccesstokens.json okunamadı: " + err.message); }
-});
-
-(async () => {
-  const dk = await tryAutoLoad("depotkeys.json");
-  if (dk) { depotKeys = dk; $("depotLabel").classList.add("loaded"); $("depotLabel").textContent = `✓ depotkeys.json (${Object.keys(dk).length} key) [auto]`; }
-  const tk = await tryAutoLoad("appaccesstokens.json");
-  if (tk) { accessTokens = tk; $("tokenLabel").classList.add("loaded"); $("tokenLabel").textContent = `✓ appaccesstokens.json (${Object.keys(tk).length} token) [auto]`; }
-  updateStatus();
-})();
-
-// ===== API =====
-async function fetchJSON(url) {
-  for (const u of [url, CORS_PROXY + encodeURIComponent(url)]) {
-    try { const r = await fetch(u, { signal: AbortSignal.timeout(15000) }); if (r.ok) return await r.json(); } catch { continue; }
-  }
-  return null;
-}
-
-// ===== DEPOT LOGIC =====
-function appendDepotLines(lines, appId, depots) {
-  const content = [], shared = [], dlcW = [], dlcWO = [];
-  for (const [did, info] of Object.entries(depots)) {
-    if (!/^\d+$/.test(did)) continue;
-    const key = depotKeys[did], name = info.name || "";
-    if (info.depotfromapp) { if (key) shared.push({ did, key, name, fa: info.depotfromapp }); }
-    else if (info.dlcappid) { const dlc = info.dlcappid, tok = accessTokens[String(dlc)]; if (key) dlcW.push({ did, key, name, dlc, tok }); else dlcWO.push({ dlc, name }); }
-    else if (key) content.push({ did, key, name });
-  }
-  if (content.length) { lines.push("", `-- Content Depots (${content.length})`); for (const d of content) lines.push(`addappid(${d.did}, 1, "${d.key}")${d.name ? " -- " + d.name : ""}`); }
-  if (shared.length) { lines.push("", `-- Shared Depots (${shared.length})`); for (const d of shared) lines.push(`addappid(${d.did}, 1, "${d.key}")${d.name ? " -- " + d.name + " (" + d.fa + ")" : ""}`); }
-  if (dlcW.length) { lines.push("", `-- DLCs with Content (${dlcW.length})`); for (const d of dlcW) { if (d.tok) lines.push(`addtoken(${d.dlc}, "${d.tok}")`); lines.push(`addappid(${d.did}, 1, "${d.key}") -- ${d.name}`); } }
-  if (dlcWO.length) { lines.push("", `-- DLCs without Dedicated Depots (${dlcWO.length})`); for (const d of dlcWO) lines.push(`addappid(${d.dlc})${d.name ? " -- " + d.name : ""}`); }
-}
-
-// ===== SINGLE GAME =====
-async function generateSingle() {
-  const appId = $("appIdInput").value.trim();
-  if (!appId || !/^\d+$/.test(appId)) { log("[!] Geçerli bir App ID gir!", "err"); return; }
-  clearLog();
-  $("generateBtn").disabled = true; $("generateBtn").textContent = "...";
-  log(`[*] SteamCMD API'den bilgi çekiliyor: ${appId}`, "info");
-
-  const info = await fetchJSON(STEAMCMD_API + appId);
-  if (!info || info.status !== "success") {
-    log("[!] App bilgisi alınamadı! (CORS veya geçersiz ID)", "err");
-    $("generateBtn").disabled = false; $("generateBtn").textContent = "Generate"; return;
-  }
-
-  const gd = info.data[String(appId)];
-  const gn = gd?.common?.name || "Unknown Game";
-  const now = new Date().toISOString().replace("T", " ").substring(0, 16) + " UTC";
-  const lines = [`-- ${gn}`, `-- AppID ${appId} | Generated on ${now} | LuaForge-Web`, "", "-- Main Application", `addappid(${appId})`, ""];
-  appendDepotLines(lines, appId, gd?.depots || {});
-  const lua = lines.join("\n");
-
-  log(`[+] Oyun bulundu: ${gn}`, "ok");
-  log(`[+] Lua oluşturuldu — ${lua.split("\n").length} satır`, "ok");
-  showOutput(`${appId}.lua`, lua);
-  $("generateBtn").disabled = false; $("generateBtn").textContent = "Generate";
-}
-
-// ===== OUTPUT =====
-function showOutput(filename, lua) {
-  lastOutput = lua; lastFilename = filename;
-  $("outputTitle").textContent = filename;
-  $("outputCode").textContent = lua;
-  $("outputSection").classList.add("visible");
-}
-
-function copyOutput() {
-  navigator.clipboard.writeText(lastOutput).then(() => {
-    const b = $("outputSection").querySelectorAll(".action-btn")[0];
-    b.textContent = "Kopyalandı ✓"; setTimeout(() => b.textContent = "Kopyala", 1500);
-  });
-}
-
-function downloadOutput() {
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([lastOutput], { type: "text/plain" }));
-  a.download = lastFilename; a.click(); URL.revokeObjectURL(a.href);
-}
-
-// ===== SEARCH =====
-function refreshSearchView() {
-  const q = $("searchInput").value.trim();
-  if (q) doSearch();
-  else showAllEntries();
-}
-
-function showAllEntries() {
-  const dk = Object.keys(depotKeys).length;
-  const tk = Object.keys(accessTokens).length;
-  if (dk === 0 && tk === 0) {
-    $("searchResults").innerHTML = '<div class="no-results">JSON dosyalarını yükleyin, ardından arama yapabilirsiniz.</div>';
-    $("searchStats").classList.remove("visible");
-    return;
-  }
-  $("searchStats").classList.add("visible");
-  $("searchStats").textContent = `${dk} depot key, ${tk} access token yüklü — aramaya başlayın`;
-  $("searchResults").innerHTML = '';
-}
-
-function doSearch() {
-  const q = $("searchInput").value.trim().toLowerCase();
-  const dk = Object.keys(depotKeys).length;
-  const tk = Object.keys(accessTokens).length;
-
-  if (dk === 0 && tk === 0) {
-    $("searchResults").innerHTML = '<div class="no-results">Önce JSON dosyalarını yükleyin.</div>';
-    $("searchStats").classList.remove("visible");
-    return;
-  }
-
-  if (!q) { showAllEntries(); return; }
-
-  const results = [];
-
-  // Search depot keys
-  for (const [id, key] of Object.entries(depotKeys)) {
-    if (id.toLowerCase().includes(q) || key.toLowerCase().includes(q)) {
-      results.push({ id, value: key, type: 'depot' });
-    }
-  }
-
-  // Search access tokens
-  for (const [id, token] of Object.entries(accessTokens)) {
-    if (id.toLowerCase().includes(q) || token.toLowerCase().includes(q)) {
-      results.push({ id, value: token, type: 'token' });
-    }
-  }
-
-  $("searchStats").classList.add("visible");
-  $("searchStats").textContent = `${results.length} sonuç bulundu (${q})`;
-
-  if (results.length === 0) {
-    $("searchResults").innerHTML = '<div class="no-results">Sonuç bulunamadı.</div>';
-    return;
-  }
-
-  // Limit display to 100 results
-  const display = results.slice(0, 100);
-  const container = $("searchResults");
-  container.innerHTML = '';
-
-  for (const r of display) {
-    const item = document.createElement("div");
-    item.className = "search-result-item";
-    item.onclick = () => openGameCard(r.id);
-    item.innerHTML = `
-      <span class="result-id">${r.id}</span>
-      <span class="result-key" title="${r.value}">${r.value}</span>
-      <span class="result-badge ${r.type === 'token' ? 'token' : ''}">${r.type === 'depot' ? 'depot key' : 'token'}</span>
-    `;
-    container.appendChild(item);
-  }
-
-  if (results.length > 100) {
-    const more = document.createElement("div");
-    more.className = "no-results";
-    more.textContent = `... ve ${results.length - 100} sonuç daha. Aramayı daraltın.`;
-    container.appendChild(more);
-  }
-}
-
-// ===== GAME CARD =====
-const appInfoCache = {};
-
-async function openGameCard(depotId) {
-  const overlay = $("gameCardOverlay");
-  const card = $("gameCard");
-  overlay.classList.add("visible");
-  card.innerHTML = '<div class="game-card-loading"><div class="spinner"></div><br>Bilgi çekiliyor...</div>';
-
-  const info = await fetchJSON(STEAMCMD_API + depotId);
-  if (!info || info.status !== "success") {
-    card.innerHTML = `
-      <div class="game-card-body">
-        <div class="game-card-title">ID: ${depotId}</div>
-        <div style="color:var(--text-dim);font-family:var(--mono);font-size:0.8rem;margin-top:8px;">
-          Bilgi alınamadı — bu bir depot ID olabilir, app ID değil.
-        </div>
-        <div class="game-card-actions">
-          <button class="card-btn-close" onclick="closeCard()">Kapat</button>
-        </div>
-      </div>`;
-    return;
-  }
-
-  const gd = info.data[String(depotId)];
-  const name = gd?.common?.name || "Unknown";
-  const type = gd?.common?.type || "";
-  const appId = depotId;
-  const depots = gd?.depots || {};
-
-  // Count depots info
-  let totalDepots = 0, keysFound = 0, dlcCount = 0;
-  for (const [did, di] of Object.entries(depots)) {
-    if (!/^\d+$/.test(did)) continue;
-    totalDepots++;
-    if (depotKeys[did]) keysFound++;
-    if (di.dlcappid) dlcCount++;
-  }
-
-  const hasWorkshop = "workshopdepot" in depots;
-  const headerImg = `https://cdn.akamai.steamstatic.com/steam/apps/${appId}/header.jpg`;
-
-  // Build depot list (max 8)
-  const depotEntries = Object.entries(depots).filter(([id]) => /^\d+$/.test(id)).slice(0, 8);
-  let depotHTML = '';
-  for (const [did, di] of depotEntries) {
-    const dName = di.name || did;
-    const hasKey = !!depotKeys[did];
-    depotHTML += `<div class="game-card-depot-row">
-      <span class="depot-name">${dName}</span>
-      <span class="depot-status ${hasKey ? '' : 'missing'}">${hasKey ? '✓ key' : '✗ yok'}</span>
-    </div>`;
-  }
-  if (Object.keys(depots).filter(id => /^\d+$/.test(id)).length > 8) {
-    depotHTML += `<div style="font-family:var(--mono);font-size:0.7rem;color:var(--text-dim);padding-top:4px;">... ve daha fazlası</div>`;
-  }
-
-  card.innerHTML = `
-    <img class="game-card-banner" src="${headerImg}" onerror="this.style.display='none'" alt="">
-    <div class="game-card-body">
-      <div class="game-card-title">${name}</div>
-      <div class="game-card-meta">
-        <span class="game-card-tag accent">AppID: ${appId}</span>
-        ${type ? `<span class="game-card-tag">${type}</span>` : ''}
-        ${dlcCount > 0 ? `<span class="game-card-tag yellow">${dlcCount} DLC</span>` : ''}
-        ${hasWorkshop ? `<span class="game-card-tag green">Workshop</span>` : ''}
-        <span class="game-card-tag">${keysFound}/${totalDepots} key</span>
-      </div>
-      ${depotHTML ? `<div class="game-card-depots">
-        <div class="game-card-depots-title">Depots</div>
-        ${depotHTML}
-      </div>` : ''}
-      <div class="game-card-actions">
-        <button class="card-btn-generate" onclick="closeCard();switchTab('single');$('appIdInput').value='${appId}';generateSingle();">Lua Oluştur</button>
-        <button class="card-btn-close" onclick="closeCard()">Kapat</button>
-      </div>
-    </div>`;
-}
-
-function closeCard() {
-  $("gameCardOverlay").classList.remove("visible");
-}
-
-document.addEventListener("keydown", e => { if (e.key === "Escape") closeCard(); });
-
-// ===== EVENTS =====
-$("appIdInput").addEventListener("keydown", e => { if (e.key === "Enter") generateSingle(); });
-</script>
-
+  <script src="app.js"></script>
 </body>
 </html>
