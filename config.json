@@ -1,0 +1,8 @@
+{
+  "subject": "Merhaba {isim}, kısa bir ricam var",
+  "body": "Sayın {isim},\n\n{sirket} ekibiyle görüşmek istiyorum. Bu hafta müsait olduğunuz bir zaman var mı?\n\nSaygılar,\nAd Soyad",
+  "recipients": [
+    { "email": "ali@ornek.com",  "isim": "Ali",   "sirket": "Acme"   },
+    { "email": "ayse@ornek.com", "isim": "Ayşe",  "sirket": "Globex" }
+  ]
+}
