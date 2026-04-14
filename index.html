@@ -1,90 +1,174 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mail Gönderimi</title>
-  <style>
-    :root {
-      --bg: #f7f8fa; --card: #fff; --border: #e3e5e8;
-      --text: #1f2328; --muted: #6b7280;
-      --accent: #1a73e8; --accent-hover: #1558b0;
-      --success: #0f9d58; --danger: #d93025;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100vh; padding: 32px 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--bg); color: var(--text);
-    }
-    .wrap { max-width: 640px; margin: 0 auto; }
-    h1 { font-size: 26px; margin: 0 0 8px; }
-    .desc { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 24px; }
-    .card {
-      background: var(--card); border: 1px solid var(--border);
-      border-radius: 10px; padding: 24px; text-align: center;
-    }
-    .count { font-size: 40px; font-weight: 600; margin-bottom: 4px; }
-    .count-label { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-    .big-btn {
-      display: inline-block; background: var(--accent); color: #fff;
-      border: none; padding: 14px 28px; border-radius: 8px;
-      font-size: 16px; font-weight: 500; cursor: pointer;
-      transition: background .15s;
-    }
-    .big-btn:hover { background: var(--accent-hover); }
-    .big-btn:disabled { background: #9aa0a6; cursor: default; }
-    .note {
-      margin-top: 16px; font-size: 12px; color: var(--muted);
-      line-height: 1.5;
-    }
-    .list {
-      margin-top: 24px; text-align: left; border-top: 1px solid var(--border);
-    }
-    .row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 10px 4px; border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .row .who { color: var(--text); }
-    .row .who small { color: var(--muted); display: block; font-size: 11px; }
-    .row button {
-      background: #fff; border: 1px solid var(--border); color: var(--text);
-      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;
-    }
-    .row button:hover { background: #f1f3f5; }
-    .row.done button { background: #e7f5ee; border-color: #b6e0c4; color: var(--success); }
-    #status { margin-top: 12px; font-size: 12px; color: var(--muted); min-height: 16px; }
-    details { margin-top: 16px; }
-    summary { color: var(--muted); font-size: 12px; cursor: pointer; }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mail Gönderimi</title>
+<style>
+  :root {
+    --bg:#f7f8fa; --card:#fff; --border:#e3e5e8;
+    --text:#1f2328; --muted:#6b7280;
+    --accent:#1a73e8; --accent-hover:#1558b0; --success:#0f9d58; --danger:#d93025;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:640px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 8px}
+  .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:24px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center}
+  .count{font-size:40px;font-weight:600;margin-bottom:4px}
+  .count-label{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .big-btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:14px 28px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s}
+  .big-btn:hover{background:var(--accent-hover)}
+  .big-btn:disabled{background:#9aa0a6;cursor:default}
+  .note{margin-top:16px;font-size:12px;color:var(--muted);line-height:1.5}
+  .list{margin-top:24px;text-align:left;border-top:1px solid var(--border)}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--border);font-size:13px}
+  .row .who small{color:var(--muted);display:block;font-size:11px}
+  .row button{background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  .row button:hover{background:#f1f3f5}
+  .row.done button{background:#e7f5ee;border-color:#b6e0c4;color:var(--success)}
+  #status{margin-top:12px;font-size:12px;color:var(--muted);min-height:16px}
+  details{margin-top:16px}
+  summary{color:var(--muted);font-size:12px;cursor:pointer}
+  .err{background:#fde8e8;border:1px solid #f5c2c2;color:var(--danger);padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-top:12px}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <h1 id="title">...</h1>
-    <p class="desc" id="desc"></p>
+<div class="wrap">
+  <h1 id="title">Mail Gönderimi</h1>
+  <p class="desc" id="desc"></p>
 
-    <div class="card">
-      <div class="count" id="count">0</div>
-      <div class="count-label">hazır mail</div>
-
-      <button id="openAll" class="big-btn">Tüm Mailleri Aç</button>
-
-      <div class="note">
-        İlk açılışta tarayıcı pop-up'ları engelleyebilir.
-        Adres çubuğundaki uyarıdan bu siteye izin verip butona tekrar bas.
-      </div>
-
-      <details>
-        <summary>Listeyi göster / tek tek aç</summary>
-        <div class="list" id="list"></div>
-      </details>
-
-      <div id="status"></div>
-    </div>
+  <div class="card">
+    <div class="count" id="count">0</div>
+    <div class="count-label">hazır mail</div>
+    <button id="openAll" class="big-btn">Tüm Mailleri Aç</button>
+    <div class="note">İlk açılışta tarayıcı pop-up'ları engelleyebilir. Adres çubuğundaki uyarıdan bu siteye izin verip butona tekrar bas.</div>
+    <details>
+      <summary>Listeyi göster / tek tek aç</summary>
+      <div class="list" id="list"></div>
+    </details>
+    <div id="status"></div>
   </div>
+</div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
+<!-- ============================================================
+     DÜZENLENECEK TEK KISIM — alıcılar ve mesaj aşağıda
+     ============================================================ -->
+<script>
+const CAMPAIGN = {
+  title: "Kampanya Adı",
+  description: "Aşağıdaki butona bastığınızda her alıcı için Gmail'de ayrı bir taslak açılır. Sizden sadece 'Gönder'e basmanız gerekir.",
+
+  subject: "Merhaba {isim}",
+
+  body:
+`Sayın {isim},
+
+{sirket} ekibine kısa bir ricam var.
+[...mesajın gövdesi burada...]
+
+Saygılarımla,
+Ad Soyad`,
+
+  recipients: [
+    { email: "ali@ornek.com",    isim: "Ali",    sirket: "Acme"    },
+    { email: "ayse@ornek.com",   isim: "Ayşe",   sirket: "Globex"  },
+    { email: "mehmet@ornek.com", isim: "Mehmet", sirket: "Initech" }
+  ]
+};
+</script>
+
+<!-- ============================================================
+     Aşağısına DOKUNMA — mantık burada
+     ============================================================ -->
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const render = (tpl, vars) => (tpl || '').replace(/\{([\w-]+)\}/g, (_, k) => (vars[k] ?? ''));
+  const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');
+  const composeUrl = (to, su, body) =>
+    'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) +
+    '&su=' + encodeURIComponent(su) + '&body=' + encodeURIComponent(body);
+  const esc = (s) => (s ?? '').toString().replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function showError(msg) {
+    const el = document.createElement('div');
+    el.className = 'err';
+    el.innerHTML = '<b>Hata:</b> ' + esc(msg);
+    document.querySelector('.card').appendChild(el);
+  }
+
+  if (typeof CAMPAIGN === 'undefined' || !CAMPAIGN) {
+    showError('CAMPAIGN tanımlı değil. Şablon script bloğunu kontrol et.');
+    $('openAll').disabled = true;
+    return;
+  }
+
+  $('title').textContent = CAMPAIGN.title || 'Mail Gönderimi';
+  $('desc').textContent  = CAMPAIGN.description || '';
+  document.title = CAMPAIGN.title || document.title;
+
+  const items = (CAMPAIGN.recipients || [])
+    .filter(r => r && isEmail(r.email))
+    .map((r, i) => ({
+      idx: i, to: r.email, row: r,
+      subject: render(CAMPAIGN.subject, r),
+      body:    render(CAMPAIGN.body,    r)
+    }));
+
+  $('count').textContent = items.length;
+
+  const list = $('list');
+  items.forEach((it) => {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.i = it.idx;
+    row.innerHTML =
+      '<div class="who"><div>' + esc(it.row.isim || it.to) + '</div>' +
+      '<small>' + esc(it.to) + '</small></div>' +
+      '<button data-i="' + it.idx + '">Aç</button>';
+    list.appendChild(row);
+  });
+
+  function markOpened(idx, ok) {
+    const row = list.querySelector('.row[data-i="' + idx + '"]');
+    if (!row) return;
+    row.classList.add('done');
+    row.querySelector('button').textContent = ok ? '✓ açıldı' : 'engellendi';
+  }
+
+  list.querySelectorAll('button').forEach((b) => {
+    b.addEventListener('click', () => {
+      const idx = parseInt(b.dataset.i, 10);
+      const it = items[idx];
+      if (!it) return;
+      const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
+      markOpened(idx, !!w);
+    });
+  });
+
+  const openAllBtn = $('openAll');
+  if (!items.length) {
+    openAllBtn.disabled = true;
+    $('status').textContent = 'Listede geçerli alıcı yok. CAMPAIGN.recipients dizisini kontrol et.';
+    return;
+  }
+
+  openAllBtn.addEventListener('click', () => {
+    $('status').textContent = 'Açılıyor...';
+    items.forEach((it, i) => {
+      setTimeout(() => {
+        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
+        markOpened(it.idx, !!w);
+        if (i === items.length - 1) {
+          $('status').textContent = 'Tüm sekmeler açıldı. Her birinde "Gönder"e basmayı unutma.';
+        }
+      }, i * 250);
+    });
+  });
+})();
+</script>
 </body>
 </html>
