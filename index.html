@@ -14,11 +14,13 @@
     --danger:#d93025; --danger-bg:#fde8e8;
   }
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;padding:32px 20px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  body{margin:0;min-height:100vh;padding:24px 16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
   .wrap{max-width:640px;margin:0 auto}
-  h1{font-size:26px;margin:0 0 8px;line-height:1.3}
-  .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:24px}
-  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;text-align:center}
+  h1{font-size:22px;margin:0 0 8px;line-height:1.3}
+  @media(min-width:640px){ body{padding:32px 20px} h1{font-size:26px} }
+  .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center}
+  @media(min-width:640px){ .card{padding:24px} }
   .count{font-size:40px;font-weight:600;margin-bottom:4px}
   .count-label{color:var(--muted);font-size:13px;margin-bottom:20px}
 
@@ -28,37 +30,54 @@
   .step-num{flex:0 0 28px;width:28px;height:28px;border-radius:50%;background:#e3e5e8;color:#555;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px}
   .step.done .step-num{background:var(--success);color:#fff}
   .step.active .step-num{background:var(--accent);color:#fff}
-  .step-body{flex:1;font-size:13px}
+  .step-body{flex:1;font-size:13px;min-width:0}
   .step-body b{display:block;margin-bottom:2px;font-size:14px}
   .step-body .sub{color:var(--muted);font-size:12px}
 
-  button.btn{display:inline-block;border:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer}
+  button.btn{display:inline-block;border:none;padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap}
   button.primary{background:var(--accent);color:#fff}
   button.primary:hover{background:var(--accent-hover)}
   button:disabled{background:#c5c9d0 !important;color:#fff !important;cursor:not-allowed;border-color:transparent !important}
 
-  .big-btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:14px 32px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:8px}
+  .big-btn{display:inline-block;background:var(--accent);color:#fff;border:none;padding:14px 28px;border-radius:8px;font-size:16px;font-weight:500;cursor:pointer;transition:background .15s;margin-top:8px;width:100%;max-width:320px}
   .big-btn:hover{background:var(--accent-hover)}
   .big-btn:disabled{background:#c5c9d0 !important;color:#fff !important;cursor:not-allowed}
-  .retry-btn{display:inline-block;background:var(--warn);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:10px}
+  .retry-btn{display:inline-block;background:var(--warn);color:#fff;border:none;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;margin-top:10px}
   .retry-btn:hover{opacity:.9}
+  .link-btn{display:inline-block;background:transparent;color:var(--muted);border:none;font-size:12px;cursor:pointer;text-decoration:underline;margin-top:12px}
 
   .warn{background:var(--warn-bg);border:1px solid #ffd591;color:var(--warn);padding:10px 12px;border-radius:6px;font-size:12px;text-align:left;margin-top:10px;line-height:1.5}
   .err{background:var(--danger-bg);border:1px solid #f5c2c2;color:var(--danger);padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-top:12px}
+  .info{background:#eef4ff;border:1px solid #b6cdf5;color:#1e40af;padding:12px;border-radius:6px;font-size:13px;text-align:left;margin-bottom:16px;line-height:1.5}
 
   .list{margin-top:16px;text-align:left;border-top:1px solid var(--border)}
-  .row{display:flex;justify-content:space-between;align-items:center;padding:10px 4px;border-bottom:1px solid var(--border);font-size:13px}
-  .row .who small{color:var(--muted);display:block;font-size:11px}
-  .row button{background:#fff;border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px solid var(--border);font-size:13px;gap:10px}
+  .row .who{flex:1;min-width:0}
+  .row .who div{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row .who small{color:var(--muted);display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row button{background:#fff;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap}
   .row button:hover{background:#f1f3f5}
   .row.done button{background:var(--success-bg);border-color:#b6e0c4;color:var(--success)}
   .row.blocked button{background:var(--warn-bg);border-color:#ffd591;color:var(--warn)}
+
+  /* Mobil modda liste daha belirgin */
+  body.mobile .mobile-hide{display:none !important}
+  body.mobile .list{border:none;margin-top:0}
+  body.mobile .row{padding:14px 8px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;background:#fff}
+  body.mobile .row button{background:var(--accent);color:#fff;border-color:var(--accent);padding:10px 16px;font-weight:500}
+  body.mobile .row.done{background:var(--success-bg);border-color:#b6e0c4}
+  body.mobile .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4}
+  body:not(.mobile) .desktop-only-hide{display:none !important}
+  body.mobile details{display:none}
 
   #status{margin-top:12px;font-size:13px;color:var(--muted);min-height:16px}
   #status.ok{color:var(--success);font-weight:500}
   #status.bad{color:var(--warn);font-weight:500}
   details{margin-top:16px}
   summary{color:var(--muted);font-size:12px;cursor:pointer}
+
+  .progress{background:#f1f3f5;border-radius:20px;height:8px;overflow:hidden;margin:12px 0}
+  .progress-bar{background:var(--success);height:100%;width:0;transition:width .3s}
 </style>
 </head>
 <body>
@@ -68,36 +87,51 @@
 
   <div class="card">
     <div class="count" id="count">0</div>
-    <div class="count-label">hazır mail</div>
+    <div class="count-label" id="countLabel">hazır mail</div>
 
-    <div class="step active" id="step1">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <b>Pop-up iznini ver</b>
-        <div class="sub">Tarayıcı varsayılan olarak çoklu sekme açılmasını engeller.</div>
-      </div>
-      <button id="permBtn" class="btn primary">Test et</button>
+    <!-- Mobil yönlendirme -->
+    <div class="info desktop-only-hide">
+      <b>📱 Mobil kullanım:</b> Aşağıdaki her alıcı için <b>"Maili Aç"</b> butonuna dokun. Mail uygulaman açılır, mesaj ve konu hazır gelir. <b>"Gönder"</b>e basıp siteye geri dön, sıradakine geç. Gönderilenler yeşil işaretlenir, tarayıcıyı kapatsan bile kaydedilir.
     </div>
 
-    <div class="step" id="step2">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <b>Mailleri aç</b>
-        <div class="sub">Her alıcı için Gmail'de ayrı taslak açılır. İmza bölümünü düzenlemeyi unutma.</div>
+    <div class="progress desktop-only-hide"><div class="progress-bar" id="progressBar"></div></div>
+
+    <!-- Masaüstü akışı -->
+    <div class="mobile-hide">
+      <div class="step active" id="step1">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <b>Pop-up iznini ver</b>
+          <div class="sub">Tarayıcı varsayılan olarak çoklu sekme açılmasını engeller.</div>
+        </div>
+        <button id="permBtn" class="btn primary">Test et</button>
       </div>
+
+      <div class="step" id="step2">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <b>Mailleri aç</b>
+          <div class="sub">Her alıcı için Gmail'de ayrı taslak açılır. İmza bölümünü düzenlemeyi unutma.</div>
+        </div>
+      </div>
+
+      <div id="permHelp" style="display:none"></div>
+
+      <button id="openAll" class="big-btn" disabled>Tüm Mailleri Aç</button>
+      <div><button id="retryBlocked" class="retry-btn" style="display:none">Engellenenleri Tekrar Aç</button></div>
     </div>
 
-    <div id="permHelp" style="display:none"></div>
-
-    <button id="openAll" class="big-btn" disabled>Tüm Mailleri Aç</button>
-    <div><button id="retryBlocked" class="retry-btn" style="display:none">Engellenenleri Tekrar Aç</button></div>
-
-    <details>
+    <details class="mobile-hide">
       <summary>Listeyi göster / tek tek aç</summary>
       <div class="list" id="list"></div>
     </details>
 
+    <!-- Mobilde liste doğrudan görünür -->
+    <div class="list desktop-only-hide" id="listMobile"></div>
+
     <div id="status"></div>
+
+    <button id="resetProgress" class="link-btn desktop-only-hide" style="display:none">İlerlemeyi sıfırla</button>
   </div>
 </div>
 
@@ -158,11 +192,25 @@ Mail Adresim: `,
   const $ = (id) => document.getElementById(id);
   const render = (tpl, vars) => (tpl || '').replace(/\{([\w-]+)\}/g, (_, k) => (vars[k] ?? ''));
   const isEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || '');
-  const composeUrl = (to, su, body) =>
-    'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) +
-    '&su=' + encodeURIComponent(su) + '&body=' + encodeURIComponent(body);
   const esc = (s) => (s ?? '').toString().replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // ---------- Cihaz tespiti ----------
+  const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+                   (window.matchMedia && window.matchMedia('(max-width: 768px)').matches && 'ontouchstart' in window);
+  if (isMobile) document.body.classList.add('mobile');
+
+  // ---------- URL üretimi ----------
+  function gmailUrl(to, su, body) {
+    return 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to) +
+      '&su=' + encodeURIComponent(su) + '&body=' + encodeURIComponent(body);
+  }
+  function mailtoUrl(to, su, body) {
+    return 'mailto:' + encodeURIComponent(to) +
+      '?subject=' + encodeURIComponent(su) +
+      '&body=' + encodeURIComponent(body);
+  }
+  const composeUrl = isMobile ? mailtoUrl : gmailUrl;
 
   function showError(msg) {
     const el = document.createElement('div');
@@ -191,44 +239,127 @@ Mail Adresim: `,
 
   $('count').textContent = items.length;
 
-  const list = $('list');
+  // ---------- Mobilde kalıcı durum ----------
+  const STORAGE_KEY = 'tadc-mail-progress-v1';
+  function loadProgress() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch { return {}; }
+  }
+  function saveProgress(p) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch {}
+  }
+  if (isMobile) {
+    const p = loadProgress();
+    items.forEach(it => { if (p[it.to]) it.opened = true; });
+  }
+
+  // ---------- Liste oluşturma ----------
+  const desktopList = $('list');
+  const mobileList = $('listMobile');
+  const listContainer = isMobile ? mobileList : desktopList;
+
   items.forEach((it) => {
     const row = document.createElement('div');
-    row.className = 'row';
+    row.className = 'row' + (it.opened ? ' done' : '');
     row.dataset.i = it.idx;
     row.innerHTML =
       '<div class="who"><div>' + esc(it.row.isim || it.to) + '</div>' +
       '<small>' + esc(it.to) + '</small></div>' +
-      '<button data-i="' + it.idx + '">Aç</button>';
-    list.appendChild(row);
+      '<button data-i="' + it.idx + '">' +
+      (it.opened ? '✓ gönderildi' : (isMobile ? 'Maili Aç' : 'Aç')) +
+      '</button>';
+    listContainer.appendChild(row);
+    // Masaüstünde eski davranışı korumak için aynı satırı detay içinde de oluşturmaya gerek yok —
+    // sadece aktif liste kullanılıyor.
   });
 
   function markRow(idx, state) {
-    const row = list.querySelector('.row[data-i="' + idx + '"]');
+    const row = listContainer.querySelector('.row[data-i="' + idx + '"]');
     if (!row) return;
     row.classList.remove('done', 'blocked');
     const btn = row.querySelector('button');
-    if (state === 'opened') { row.classList.add('done'); btn.textContent = '✓ açıldı'; items[idx].opened = true; }
-    else if (state === 'blocked') { row.classList.add('blocked'); btn.textContent = 'engellendi'; items[idx].opened = false; }
-    else { btn.textContent = 'Aç'; items[idx].opened = false; }
+    if (state === 'opened') {
+      row.classList.add('done');
+      btn.textContent = isMobile ? '✓ gönderildi' : '✓ açıldı';
+      items[idx].opened = true;
+    } else if (state === 'blocked') {
+      row.classList.add('blocked');
+      btn.textContent = 'engellendi';
+      items[idx].opened = false;
+    } else {
+      btn.textContent = isMobile ? 'Maili Aç' : 'Aç';
+      items[idx].opened = false;
+    }
+    if (isMobile) {
+      const p = loadProgress();
+      if (items[idx].opened) p[items[idx].to] = Date.now();
+      else delete p[items[idx].to];
+      saveProgress(p);
+      updateMobileProgress();
+    }
   }
 
-  list.querySelectorAll('button').forEach((b) => {
+  function updateMobileProgress() {
+    const done = items.filter(x => x.opened).length;
+    const pct = items.length ? Math.round(done / items.length * 100) : 0;
+    const bar = $('progressBar');
+    if (bar) bar.style.width = pct + '%';
+    $('countLabel').textContent = isMobile ? (done + ' / ' + items.length + ' gönderildi') : 'hazır mail';
+    const reset = $('resetProgress');
+    if (reset) reset.style.display = (done > 0) ? 'inline-block' : 'none';
+    if (done === items.length && done > 0) {
+      $('status').className = 'ok';
+      $('status').textContent = '🎉 Tebrikler! Tüm mailler gönderildi.';
+    } else {
+      $('status').className = '';
+      $('status').textContent = '';
+    }
+  }
+
+  // Liste butonlarına click/tap
+  listContainer.querySelectorAll('button').forEach((b) => {
     b.addEventListener('click', () => {
       const idx = parseInt(b.dataset.i, 10);
       const it = items[idx];
       if (!it) return;
-      const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
-      markRow(idx, (w && !w.closed) ? 'opened' : 'blocked');
+
+      if (isMobile) {
+        // mailto: link — navigation ile aç. window.open bazı mobil tarayıcılarda
+        // mailto'yu düşürür. Geçici bir <a> elementi kullanmak en güvenilir yol.
+        const a = document.createElement('a');
+        a.href = composeUrl(it.to, it.subject, it.body);
+        a.rel = 'noopener';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        // Kullanıcı mail uygulamasına geçti; geri dönünce tıkladı sayalım.
+        markRow(idx, 'opened');
+      } else {
+        const w = window.open(composeUrl(it.to, it.subject, it.body), '_blank');
+        markRow(idx, (w && !w.closed) ? 'opened' : 'blocked');
+      }
     });
   });
 
+  if (isMobile) {
+    updateMobileProgress();
+    $('resetProgress').addEventListener('click', () => {
+      if (!confirm('İlerlemeyi sıfırla?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      items.forEach(it => markRow(it.idx, 'reset'));
+      updateMobileProgress();
+    });
+    return; // Masaüstü akışını mobil modda çalıştırma
+  }
+
   if (!items.length) {
-    $('status').textContent = 'Listede geçerli alıcı yok. CAMPAIGN.recipients dizisini kontrol et.';
+    $('status').textContent = 'Listede geçerli alıcı yok.';
     $('permBtn').disabled = true;
     return;
   }
 
+  // ---------- Masaüstü: pop-up izin + toplu açma ----------
   const step1 = $('step1'), step2 = $('step2');
   const permBtn = $('permBtn');
   const permHelp = $('permHelp');
@@ -290,7 +421,7 @@ Mail Adresim: `,
             retryBtn.style.display = 'none';
           } else {
             $('status').className = 'bad';
-            $('status').textContent = opened + '/' + items.length + ' açıldı · ' + blockedItems.length + ' engellendi. Tarayıcı pop-up iznini kısıtlamış olabilir.';
+            $('status').textContent = opened + '/' + items.length + ' açıldı · ' + blockedItems.length + ' engellendi.';
             retryBtn.style.display = 'inline-block';
             retryBtn.textContent = 'Engellenen ' + blockedItems.length + ' sekmeyi tekrar aç';
           }
