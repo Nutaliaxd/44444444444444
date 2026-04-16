@@ -4,6 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>TADC Türkiye Dağıtım Kampanyası</title>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-M83292QG9L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-M83292QG9L');
+</script>
+
 <style>
   :root {
     --bg:#f7f8fa; --card:#fff; --border:#e3e5e8;
@@ -141,6 +151,15 @@ Mail Adresim: `,
   const esc = (s) => (s ?? '').toString().replace(/[&<>"']/g, c =>
     ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
+  // ---------- GA event gönderici ----------
+  function track(eventName, params) {
+    try {
+      if (typeof gtag === 'function') {
+        gtag('event', eventName, params || {});
+      }
+    } catch(e) {}
+  }
+
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   if (isMobile) {
     document.querySelector('.desktop-text').style.display = 'none';
@@ -226,6 +245,7 @@ Mail Adresim: `,
     updateCounters();
   }
 
+  let allDoneTracked = false;
   function updateCounters() {
     const done = items.filter(x => x.opened).length;
     $('countDone').textContent = done;
@@ -236,6 +256,10 @@ Mail Adresim: `,
     if (done === items.length && done > 0) {
       banner.style.display = 'block';
       $('howto').style.display = 'none';
+      if (!allDoneTracked) {
+        allDoneTracked = true;
+        track('all_mails_sent', { total: items.length });
+      }
     } else {
       banner.style.display = 'none';
       $('howto').style.display = 'block';
@@ -247,9 +271,17 @@ Mail Adresim: `,
       const idx = parseInt(b.dataset.i, 10);
       const it = items[idx];
       if (!it) return;
+
+      // GA event: hangi şirkete mail açıldı
+      track('mail_open', {
+        recipient_name: it.row.isim || it.to,
+        recipient_email: it.to,
+        platform: isMobile ? 'mobile' : 'desktop',
+        is_reopen: items[idx].opened ? 'yes' : 'no'
+      });
+
       const url = composeUrl(it.to, it.subject, it.body);
       if (isMobile) {
-        // mailto: mobile — safer via anchor click
         const a = document.createElement('a');
         a.href = url;
         a.rel = 'noopener';
@@ -266,7 +298,9 @@ Mail Adresim: `,
 
   $('resetProgress').addEventListener('click', () => {
     if (!confirm('İlerleme sıfırlansın mı? Hangilerini gönderdiğin kaydı silinir (gerçek mailler zaten gönderilmiştir, onları etkilemez).')) return;
+    track('progress_reset');
     localStorage.removeItem(STORAGE_KEY);
+    allDoneTracked = false;
     items.forEach(it => markRow(it.idx, false));
   });
 
