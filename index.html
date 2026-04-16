@@ -34,6 +34,113 @@
   .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
   @media(min-width:640px){ .card{padding:24px} }
 
+  /* ============================================
+     SON DAKİKA / BREAKING NEWS BANNER
+     ============================================ */
+  .breaking-banner{
+    display:block;
+    background:linear-gradient(135deg,#dc2626 0%,#991b1b 60%,#7f1d1d 100%);
+    border:2px solid #fbbf24;
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:18px;
+    text-decoration:none;
+    color:#fff;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 4px 20px rgba(220,38,38,.35);
+    animation:breaking-glow 2.4s ease-in-out infinite;
+  }
+  .breaking-banner:hover{
+    transform:translateY(-1px);
+    box-shadow:0 6px 26px rgba(251,191,36,.55);
+  }
+  @keyframes breaking-glow{
+    0%,100%{box-shadow:0 4px 20px rgba(220,38,38,.35)}
+    50%{box-shadow:0 4px 28px rgba(251,191,36,.55)}
+  }
+  /* Parıltılı sweep efekti */
+  .breaking-banner::before{
+    content:'';
+    position:absolute;
+    top:0;left:-60%;
+    width:45%;height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+    transform:skewX(-20deg);
+    animation:breaking-sweep 3.5s infinite;
+    pointer-events:none;
+  }
+  @keyframes breaking-sweep{
+    0%{left:-60%}
+    60%,100%{left:120%}
+  }
+  .breaking-inner{
+    display:flex;align-items:center;gap:14px;
+    position:relative;z-index:1;
+  }
+  .breaking-badge{
+    background:#fbbf24;
+    color:#7c2d12;
+    font-weight:800;
+    font-size:11px;
+    padding:5px 10px;
+    border-radius:4px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    letter-spacing:.6px;
+    flex:0 0 auto;
+    text-transform:uppercase;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+  }
+  .breaking-dot{
+    width:8px;height:8px;
+    background:#dc2626;
+    border-radius:50%;
+    animation:breaking-pulse 1s infinite;
+    box-shadow:0 0 6px rgba(220,38,38,.8);
+  }
+  @keyframes breaking-pulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.35;transform:scale(.75)}
+  }
+  .breaking-content{flex:1;min-width:0}
+  .breaking-content b{
+    display:block;
+    font-size:15px;
+    font-weight:700;
+    line-height:1.3;
+    margin-bottom:3px;
+    text-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+  .breaking-content span{
+    font-size:12.5px;
+    opacity:.92;
+    line-height:1.4;
+  }
+  .breaking-arrow{
+    font-size:22px;
+    font-weight:700;
+    animation:breaking-arrow 1.4s ease-in-out infinite;
+    flex:0 0 auto;
+    opacity:.95;
+  }
+  @keyframes breaking-arrow{
+    0%,100%{transform:translateX(0)}
+    50%{transform:translateX(5px)}
+  }
+  @media(min-width:640px){
+    .breaking-content b{font-size:16px}
+    .breaking-content span{font-size:13px}
+  }
+  @media(max-width:420px){
+    .breaking-banner{padding:14px 14px}
+    .breaking-inner{gap:10px}
+    .breaking-content b{font-size:14px}
+    .breaking-content span{font-size:12px}
+    .breaking-arrow{font-size:18px}
+  }
+
   /* Change.org kartı */
   .change-card{background:var(--change-bg);border-color:#c4e0c8}
   .change-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -142,6 +249,26 @@
 </head>
 <body>
 <div class="wrap">
+
+  <!-- ============================================
+       SON DAKİKA BANNER — dikkat çekici, en üstte
+       ============================================ -->
+  <a id="breakingBanner" class="breaking-banner"
+     href="https://x.com/TADCTurkiyede/status/2044730264727793844"
+     target="_blank" rel="noopener">
+    <div class="breaking-inner">
+      <div class="breaking-badge">
+        <span class="breaking-dot"></span>
+        Son Dakika
+      </div>
+      <div class="breaking-content">
+        <b>🚨 Dağıtımcılardan aşırı önemli bir haber geldi!</b>
+        <span>Kampanyanın seyrini değiştirecek bir gelişme var — detaylar için tıkla →</span>
+      </div>
+      <div class="breaking-arrow">→</div>
+    </div>
+  </a>
+
   <h1 id="title">Mail Gönderimi</h1>
   <p class="desc" id="desc"></p>
 
@@ -356,6 +483,12 @@ Mail Adresim: `,
   function track(eventName, params) {
     try { if (typeof gtag === 'function') gtag('event', eventName, params || {}); }
     catch(e) {}
+  }
+
+  // Breaking banner tıklama takibi
+  const breakingBanner = $('breakingBanner');
+  if (breakingBanner) {
+    breakingBanner.addEventListener('click', () => track('breaking_news_click'));
   }
 
   // ---------- Change.org canlı imza sayısı ----------
