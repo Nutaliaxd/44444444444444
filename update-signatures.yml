@@ -1,0 +1,99 @@
+name: Update Change.org Signature Count
+
+on:
+  schedule:
+    # Her saat başı çalış (UTC)
+    - cron: '0 * * * *'
+  workflow_dispatch: # Actions sekmesinden manuel tetikleme
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch signature count from Change.org
+        id: fetch
+        run: |
+          set -e
+          URL="https://www.change.org/p/the-amazing-digital-circus-9-b%C3%B6l%C3%BCm-t%C3%BCrkiye-sinemalar%C4%B1nda-da-yay%C4%B1nlans%C4%B1n"
+          
+          # Change.org sayfasını indir (gerçek tarayıcı user-agent ile)
+          HTML=$(curl -sL \
+            -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+            -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9" \
+            -H "Accept-Language: tr-TR,tr;q=0.9,en;q=0.8" \
+            "$URL")
+          
+          echo "HTML boyutu: $(echo "$HTML" | wc -c) karakter"
+          
+          # Birkaç farklı pattern dene — biri tutmalı
+          COUNT=""
+          
+          # Pattern 1: JSON içinde displayed_signature_count
+          COUNT=$(echo "$HTML" | grep -oE '"displayed_signature_count"[[:space:]]*:[[:space:]]*[0-9]+' | head -1 | grep -oE '[0-9]+$' || true)
+          
+          # Pattern 2: signatureCount
+          if [ -z "$COUNT" ]; then
+            COUNT=$(echo "$HTML" | grep -oE '"signatureCount"[[:space:]]*:[[:space:]]*[0-9]+' | head -1 | grep -oE '[0-9]+$' || true)
+          fi
+          
+          # Pattern 3: signature_count
+          if [ -z "$COUNT" ]; then
+            COUNT=$(echo "$HTML" | grep -oE '"signature_count"[[:space:]]*:[[:space:]]*[0-9]+' | head -1 | grep -oE '[0-9]+$' || true)
+          fi
+          
+          # Pattern 4: userInteractionCount (schema.org)
+          if [ -z "$COUNT" ]; then
+            COUNT=$(echo "$HTML" | grep -oE '"userInteractionCount"[[:space:]]*:[[:space:]]*"?[0-9]+' | head -1 | grep -oE '[0-9]+$' || true)
+          fi
+          
+          # Pattern 5: totalSignatureCount
+          if [ -z "$COUNT" ]; then
+            COUNT=$(echo "$HTML" | grep -oE '"totalSignatureCount"[[:space:]]*:[[:space:]]*[0-9]+' | head -1 | grep -oE '[0-9]+$' || true)
+          fi
+          
+          # Pattern 6: görünen metin "X.XXX Doğrulanmış imza" (Türkçe format)
+          if [ -z "$COUNT" ]; then
+            COUNT=$(echo "$HTML" | grep -oE '[0-9]+[.,]?[0-9]*[[:space:]]*[Dd]oğrulanmış' | head -1 | grep -oE '[0-9.]+' | tr -d '.,')
+          fi
+          
+          if [ -z "$COUNT" ] || [ "$COUNT" = "0" ]; then
+            echo "::warning::İmza sayısı bulunamadı, güncelleme yapılmayacak."
+            echo "found=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "Bulunan imza sayısı: $COUNT"
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          echo "found=true" >> $GITHUB_OUTPUT
+
+      - name: Write signatures.json
+        if: steps.fetch.outputs.found == 'true'
+        run: |
+          COUNT="${{ steps.fetch.outputs.count }}"
+          NOW=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          cat > signatures.json <<EOF
+          {
+            "count": $COUNT,
+            "updatedAt": "$NOW"
+          }
+          EOF
+          cat signatures.json
+
+      - name: Commit if changed
+        if: steps.fetch.outputs.found == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add signatures.json
+          if git diff --quiet --staged; then
+            echo "Değişiklik yok, commit atlanıyor."
+          else
+            git commit -m "chore: update signature count to ${{ steps.fetch.outputs.count }} [skip ci]"
+            git push
+          fi
