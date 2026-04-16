@@ -58,22 +58,23 @@
   .x-btn{background:#fff;color:var(--x-dark);border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
   .x-btn:hover{background:#e5e7eb}
 
-  /* Son paylaşımlar kartı */
-  .tweets-card h2{font-size:16px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
-  .tweets-card h2 svg{width:18px;height:18px;fill:var(--text)}
-  .tweets-card .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
-  .tweets-wrap{display:flex;flex-direction:column;gap:12px}
-  .tweet-box{border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:120px;position:relative;background:#fff}
-  .tweet-box .fallback{padding:14px;display:flex;flex-direction:column;gap:8px}
-  .tweet-box .fallback .lbl{color:var(--muted);font-size:12px;display:flex;align-items:center;gap:6px}
-  .tweet-box .fallback .lbl svg{width:14px;height:14px;fill:var(--muted)}
-  .tweet-box .fallback a{color:var(--accent);text-decoration:none;font-size:13px;word-break:break-all}
-  .tweet-box .fallback a:hover{text-decoration:underline}
-  .tweet-box .twitter-tweet{margin:0 !important}
-  /* Gömülü tweet geldiğinde fallback gizle */
-  .tweet-box.loaded .fallback{display:none}
-  .tweets-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px;font-style:italic}
-  .see-all-x{display:inline-block;margin-top:12px;color:var(--accent);font-size:13px;text-decoration:none;font-weight:500}
+  /* Öne çıkan paylaşımlar — resim galerisi */
+  .gallery-card h2{font-size:16px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
+  .gallery-card h2 svg{width:18px;height:18px;fill:var(--text)}
+  .gallery-card .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
+  .gallery{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:520px){ .gallery{grid-template-columns:1fr 1fr} }
+  .post-item{display:block;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s,border-color .15s;background:#fff}
+  .post-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#b6cdf5}
+  .post-img-wrap{position:relative;aspect-ratio:1/1;background:#f1f3f5;overflow:hidden}
+  .post-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .post-img-wrap .broken{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;gap:6px;padding:10px;text-align:center}
+  .post-meta{padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:12px}
+  .post-meta svg{width:12px;height:12px;fill:var(--muted);flex:0 0 auto}
+  .post-handle{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .post-ext{color:var(--muted);margin-left:auto;flex:0 0 auto}
+  .gallery-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px;font-style:italic}
+  .see-all-x{display:inline-block;margin-top:14px;color:var(--accent);font-size:13px;text-decoration:none;font-weight:500}
   .see-all-x:hover{text-decoration:underline}
 
   /* Ana kart */
@@ -117,6 +118,13 @@
   .link-btn:hover{color:var(--text)}
 
   .done-banner{background:var(--success-bg);border:1px solid #b6e0c4;color:var(--success);padding:14px;border-radius:8px;text-align:center;font-weight:500;margin-bottom:16px;font-size:15px;display:none}
+
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:4px}
+  .lightbox .close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox .close:hover{background:rgba(255,255,255,.35)}
 
   /* FAQ */
   .faq h2{font-size:16px;margin:0 0 12px}
@@ -203,15 +211,15 @@
     </div>
   </div>
 
-  <!-- Son X paylaşımları -->
-  <div class="card tweets-card" id="tweetsCard">
+  <!-- Öne çıkan görseller galerisi -->
+  <div class="card gallery-card" id="galleryCard">
     <h2>
       <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      @TADCTurkiyede'den öne çıkanlar
+      Hayran paylaşımları
     </h2>
-    <div class="sub">Kampanyayla ilgili paylaştığımız thread'ler, videolar ve görseller.</div>
-    <div class="tweets-wrap" id="tweetsWrap"></div>
-    <a class="see-all-x" href="https://x.com/TADCTurkiyede" target="_blank" rel="noopener">Tümünü X'te gör →</a>
+    <div class="sub">Kampanyaya destek veren hayranların çizimleri ve paylaşımları. Görsele tıkla büyütmek için, kullanıcı adına tıkla sanatçının profiline gitmek için.</div>
+    <div class="gallery" id="gallery"></div>
+    <a class="see-all-x" href="https://x.com/TADCTurkiyede" target="_blank" rel="noopener">Daha fazlası için @TADCTurkiyede →</a>
   </div>
 
   <!-- FAQ -->
@@ -244,8 +252,14 @@
   </div>
 </div>
 
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="close" id="lightboxClose" aria-label="Kapat">×</button>
+  <img id="lightboxImg" alt="" />
+</div>
+
 <!-- ============================================================
-     DÜZENLENECEK TEK KISIM — alıcılar, mesaj ve tweet URL'leri aşağıda
+     DÜZENLENECEK TEK KISIM — alıcılar, mesaj ve galeri aşağıda
      ============================================================ -->
 <script>
 const CAMPAIGN = {
@@ -290,11 +304,30 @@ Mail Adresim: `,
     { email: "info@a90pictures.com",   isim: "A90 Pictures"      }
   ],
 
-  // Öne çıkarmak istediğin X paylaşımlarının (thread başı tweet'lerinin) URL'leri.
-  // Yeni thread paylaştığında buraya URL ekle, en üsttekiler sitede en üstte görünür.
-  // Sadece @TADCTurkiyede hesabının tweet'leri kabul edilir.
-  featuredTweets: [
-    "https://x.com/TADCTurkiyede/status/2044681556132794744"
+  // ============================================================
+  // Hayran paylaşımları / galeri
+  // ============================================================
+  // Yeni bir görsel eklemek için aşağıdaki formatta yeni bir satır ekle:
+  //   { image: "images/dosya-adi.jpg", handle: "kullaniciAdi" }
+  //
+  // - image: Repo içindeki resim dosyasının yolu. Önerilen yol:
+  //          Repo'da "images" adında bir klasör oluştur, resimleri oraya yükle.
+  //          Örn: images/ali-cizim.jpg
+  // - handle: Resmi yapanın X kullanıcı adı (@ işareti olmadan).
+  //           Kullanıcı adına tıklanınca x.com/<handle> adresine gider.
+  // - postUrl (opsiyonel): Resmin orijinal post linki. Verilmezse profile gider.
+  //           Örn: postUrl: "https://x.com/kullanici/status/1234567890"
+  // - caption (opsiyonel): Görselin altına küçük bir not eklenebilir.
+  //
+  // Listede en üsttekiler sitede en üstte görünür.
+  // ============================================================
+  featuredPosts: [
+  { image: "images/CloudYT001.png", handle: "@CloudYT001" },
+  { image: "images/Inhundefender.jpg", handle: "@Inhundefender" }
+    // Örnekler — kendi resimlerinle değiştir:
+    // { image: "images/ornek1.jpg", handle: "ornekKullanici1" },
+    // { image: "images/ornek2.png", handle: "ornekKullanici2", postUrl: "https://x.com/ornekKullanici2/status/1234567890" },
+    // { image: "images/ornek3.jpg", handle: "ornekKullanici3", caption: "Cosplay çalışması" },
   ]
 };
 </script>
@@ -330,63 +363,74 @@ Mail Adresim: `,
       $('sigCount').textContent = '2.335+';
     });
 
-  // ---------- X paylaşımları ----------
-  const ALLOWED_HANDLE = 'TADCTurkiyede';
-  const tweetsWrap = $('tweetsWrap');
-  const tweets = (CAMPAIGN.featuredTweets || []).filter(Boolean);
+  // ---------- Galeri ----------
+  const gallery = $('gallery');
+  const galleryCard = $('galleryCard');
+  const posts = (CAMPAIGN.featuredPosts || []).filter(p => p && p.image && p.handle);
 
-  if (tweets.length === 0) {
-    tweetsWrap.innerHTML = '<div class="tweets-empty">Henüz öne çıkan paylaşım eklenmemiş.</div>';
+  if (posts.length === 0) {
+    galleryCard.style.display = 'none';
   } else {
-    // Sadece @TADCTurkiyede tweet'lerini kabul et
-    const safeTweets = tweets.filter(url => {
-      try {
-        const u = new URL(url);
-        const parts = u.pathname.split('/').filter(Boolean);
-        return (u.hostname === 'x.com' || u.hostname === 'twitter.com') &&
-               parts[0] && parts[0].toLowerCase() === ALLOWED_HANDLE.toLowerCase() &&
-               parts[1] === 'status' && /^\d+$/.test(parts[2]);
-      } catch { return false; }
-    });
+    posts.forEach((p, i) => {
+      const profileUrl = p.postUrl || ('https://x.com/' + p.handle);
+      const link = document.createElement('a');
+      link.className = 'post-item';
+      link.href = profileUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.innerHTML =
+        '<div class="post-img-wrap">' +
+          '<img src="' + esc(p.image) + '" alt="@' + esc(p.handle) + ' tarafından paylaşılan görsel" loading="lazy" />' +
+        '</div>' +
+        '<div class="post-meta">' +
+          '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' +
+          '<span class="post-handle">@' + esc(p.handle) + '</span>' +
+          (p.caption ? '<span class="post-ext" title="' + esc(p.caption) + '">' + esc(p.caption) + '</span>' : '<span class="post-ext">→</span>') +
+        '</div>';
 
-    if (safeTweets.length === 0) {
-      tweetsWrap.innerHTML = '<div class="tweets-empty">Geçerli bir @' + ALLOWED_HANDLE + ' tweet\'i eklenmemiş.</div>';
-    } else {
-      safeTweets.forEach((url, i) => {
-        const box = document.createElement('div');
-        box.className = 'tweet-box';
-        box.id = 'tweet-' + i;
-        // Fallback: widget.js yüklenemezse görünecek
-        box.innerHTML =
-          '<div class="fallback">' +
-            '<div class="lbl">' +
-              '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>' +
-              '@' + ALLOWED_HANDLE +
-            '</div>' +
-            '<a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url) + '</a>' +
-          '</div>' +
-          '<blockquote class="twitter-tweet" data-lang="tr" data-dnt="true">' +
-            '<a href="' + esc(url) + '"></a>' +
-          '</blockquote>';
-        tweetsWrap.appendChild(box);
+      // Resim hata verirse broken placeholder
+      const img = link.querySelector('img');
+      img.addEventListener('error', () => {
+        const wrap = img.parentElement;
+        wrap.innerHTML = '<div class="broken">🖼️<br>Görsel yüklenemedi<br><small>' + esc(p.image) + '</small></div>';
       });
 
-      // widgets.js dinamik yükle
-      const script = document.createElement('script');
-      script.async = true;
-      script.src = 'https://platform.twitter.com/widgets.js';
-      script.charset = 'utf-8';
-      script.onload = () => {
-        // Widget yüklendi, gömüldükleri kutuyu işaretle
-        setTimeout(() => {
-          document.querySelectorAll('.tweet-box').forEach(box => {
-            if (box.querySelector('iframe')) box.classList.add('loaded');
-          });
-        }, 1500);
-      };
-      document.head.appendChild(script);
-    }
+      // Kullanıcı adına tıklanınca profile, resme tıklanınca lightbox
+      img.parentElement.style.cursor = 'zoom-in';
+      img.parentElement.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openLightbox(p.image);
+        track('gallery_image_click', { handle: p.handle, index: i });
+      });
+
+      link.addEventListener('click', () => {
+        track('gallery_profile_click', { handle: p.handle, index: i });
+      });
+
+      gallery.appendChild(link);
+    });
   }
+
+  // Lightbox
+  const lightbox = $('lightbox');
+  const lightboxImg = $('lightboxImg');
+  function openLightbox(src) {
+    lightboxImg.src = src;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { lightboxImg.src = ''; }, 200);
+  }
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target.id === 'lightboxClose') closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
 
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   if (isMobile) {
