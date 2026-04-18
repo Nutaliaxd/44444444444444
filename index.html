@@ -215,6 +215,89 @@
   .faq-item.open .faq-a{max-height:400px;padding-bottom:14px}
   .faq-a a{color:var(--accent);text-decoration:none}
   .faq-a a:hover{text-decoration:underline}
+
+  /* ============ MOBİL İYİLEŞTİRMELER ============ */
+  @media(max-width:640px){
+    body{padding:14px 12px;padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-bottom:max(14px,env(safe-area-inset-bottom))}
+    .wrap{max-width:100%}
+    h1{font-size:20px;margin-bottom:6px}
+    .desc{font-size:13px;margin-bottom:16px;line-height:1.55}
+    .card{padding:16px;margin-bottom:14px;border-radius:12px}
+
+    /* Breaking banner daha tight */
+    .breaking-banner{padding:12px 14px;border-radius:10px;margin-bottom:14px}
+    .breaking-inner{gap:10px}
+    .breaking-badge{font-size:10px;padding:4px 8px;letter-spacing:.4px}
+    .breaking-content b{font-size:13.5px;line-height:1.25;margin-bottom:2px}
+    .breaking-content span{font-size:11.5px;line-height:1.35}
+    .breaking-arrow{font-size:18px}
+
+    /* Change.org ve X kartları — mobilde dikey stack, buton tam genişlik */
+    .change-inner,.x-inner{flex-direction:column;align-items:stretch;gap:12px;text-align:center}
+    .change-icon,.x-icon{margin:0 auto}
+    .change-text,.x-text{min-width:0;text-align:center}
+    .change-btn,.x-btn{width:100%;padding:14px;font-size:14px;text-align:center;min-height:48px;display:flex;align-items:center;justify-content:center}
+
+    /* Sayaç ortala ve büyüt */
+    .header{flex-direction:column;align-items:center;gap:4px;text-align:center;margin-bottom:14px}
+    .count{font-size:40px}
+    .count-label{font-size:14px}
+    .progress{height:10px;border-radius:6px;margin-bottom:14px}
+
+    .info{padding:14px;font-size:13px;line-height:1.55}
+
+    /* İMZA FORMU — iOS zoom'u engellemek için input 16px ŞART */
+    .sig-body input{font-size:16px;padding:12px 14px;margin-bottom:12px}
+    .sig-toggle{padding:14px;font-size:13px}
+    .sig-body label{font-size:13px;margin-bottom:6px}
+    .sig-body .sig-note{font-size:12px;line-height:1.45}
+
+    /* Mail listesi satırları — tap target büyüt */
+    .list{gap:10px}
+    .row{padding:14px 12px;gap:10px;border-radius:10px}
+    .row .who .name{font-size:14.5px}
+    .row .who .email{font-size:12px}
+    .row button{padding:12px 16px;font-size:13px;min-height:44px;font-weight:600}
+    .row .btn-copy{padding:12px;min-height:44px;min-width:44px}
+
+    /* Paylaş kartı */
+    .share-card h2{font-size:15px;line-height:1.35}
+    .share-sub{font-size:12.5px;margin-bottom:12px}
+    .share-grid{grid-template-columns:1fr 1fr;gap:8px}
+    .share-grid .share-wa{grid-column:1/-1}
+    .share-btn{padding:14px 10px;font-size:14px;min-height:48px}
+
+    /* Galeri — kartlar daha geniş, swipe daha rahat */
+    .gallery-card h2{font-size:15px}
+    .gallery-card .sub{font-size:12.5px;margin-bottom:12px}
+    .post-item{flex:0 0 72%}
+    .post-meta{padding:9px 10px;font-size:11.5px}
+
+    /* FAQ tap target */
+    .faq h2{font-size:15px;margin-bottom:8px}
+    .faq-q{padding:16px 0;font-size:14px;min-height:50px;line-height:1.35}
+    .faq-a{font-size:13px;line-height:1.6}
+
+    .done-banner{font-size:14px;padding:16px;line-height:1.4}
+    .footer{justify-content:center;gap:12px;margin-top:14px}
+
+    /* Lightbox mobile'da kenarlara daha yakın */
+    .lightbox{padding:12px}
+    .lightbox .close{top:10px;right:10px;width:38px;height:38px}
+  }
+
+  /* Ekstra küçük ekranlar (iPhone SE, eski cihazlar) */
+  @media(max-width:380px){
+    body{padding:10px 10px}
+    .card{padding:14px}
+    h1{font-size:18px}
+    .count{font-size:34px}
+    .breaking-content b{font-size:12.5px}
+    .breaking-content span{font-size:11px}
+    .breaking-badge{font-size:9.5px;padding:3px 7px}
+    .post-item{flex:0 0 82%}
+    .change-btn,.x-btn,.share-btn{font-size:13.5px}
+  }
 </style>
 </head>
 <body>
