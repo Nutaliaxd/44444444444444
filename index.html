@@ -385,18 +385,7 @@ const CAMPAIGN = {
   subject: "Dağıtım Talebi: The Amazing Digital Circus: The Last Act — Türkiye'de Kanıtlanmış Hayran Kitlesi",
 
   // body: mail-body.txt dosyasından otomatik çekiliyor — metni değiştirmek için HTML'e dokunma, sadece o txt'yi düzenle.
-
-  recipients: [
-    { email: "tmefilms@tme.com.tr",    isim: "TME Films"        },
-    { email: "info@marsfilm.net",      isim: "Mars Film"         },
-    { email: "info@bgfilmcilik.com",   isim: "BG Film"           },
-    { email: "info@birfilm.com",       isim: "Bir Film"          },
-    { email: "info@baskasinema.com",   isim: "Başka Sinema"      },
-    { email: "info@cjenm.com",         isim: "CJ ENM"            },
-    { email: "info@uip.com.tr",        isim: "UIP Türkiye"       },
-    { email: "info@chantierfilms.com", isim: "Chantier Films"    },
-    { email: "info@a90pictures.com",   isim: "A90 Pictures"      }
-  ],
+  // recipients: recipients.txt dosyasından otomatik çekiliyor — yeni dağıtımcı eklemek için o dosyayı düzenle.
 
   // GitHub API erişilemezse kullanılacak yedek liste (manuel).
   // Normalde buraya dokunmana gerek yok; images/ klasörüne resim atınca
@@ -659,15 +648,7 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   $('desc').textContent  = CAMPAIGN.description || '';
   document.title = CAMPAIGN.title || document.title;
 
-  const items = (CAMPAIGN.recipients || [])
-    .filter(r => r && isEmail(r.email))
-    .map((r, i) => ({
-      idx: i, to: r.email, row: r,
-      subject: render(CAMPAIGN.subject, r),
-      opened: false
-    }));
-
-  $('countTotal').textContent = items.length;
+  let items = [];
 
   // ---------- İmza formu ----------
   const SIG_KEY = 'tadc-signature-v1';
@@ -731,24 +712,29 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   function saveProgress(p) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); } catch {}
   }
-  const progress = loadProgress();
-  items.forEach(it => { if (progress[it.to]) it.opened = true; });
-
   const list = $('list');
-  items.forEach((it) => {
-    const row = document.createElement('div');
-    row.className = 'row' + (it.opened ? ' done' : '');
-    row.dataset.i = it.idx;
-    row.innerHTML =
-      '<div class="who">' +
-        '<div class="name">' + esc(it.row.isim || it.to) + '</div>' +
-        '<div class="email">' + esc(it.to) + '</div>' +
-      '</div>' +
-      '<button data-i="' + it.idx + '">' +
-        (it.opened ? 'Tekrar aç' : 'Maili Aç') +
-      '</button>';
-    list.appendChild(row);
-  });
+
+  function renderListDom() {
+    const progress = loadProgress();
+    items.forEach(it => { if (progress[it.to]) it.opened = true; });
+    list.innerHTML = '';
+    items.forEach((it) => {
+      const row = document.createElement('div');
+      row.className = 'row' + (it.opened ? ' done' : '');
+      row.dataset.i = it.idx;
+      row.innerHTML =
+        '<div class="who">' +
+          '<div class="name">' + esc(it.row.isim || it.to) + '</div>' +
+          '<div class="email">' + esc(it.to) + '</div>' +
+        '</div>' +
+        '<button data-i="' + it.idx + '">' +
+          (it.opened ? 'Tekrar aç' : 'Maili Aç') +
+        '</button>';
+      list.appendChild(row);
+    });
+    bindRowButtons();
+    updateCounters();
+  }
 
   function markRow(idx, opened) {
     const row = list.querySelector('.row[data-i="' + idx + '"]');
@@ -790,38 +776,40 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     }
   }
 
-  list.querySelectorAll('button').forEach((b) => {
-    b.addEventListener('click', () => {
-      const idx = parseInt(b.dataset.i, 10);
-      const it = items[idx];
-      if (!it) return;
+  function bindRowButtons() {
+    list.querySelectorAll('button').forEach((b) => {
+      b.addEventListener('click', () => {
+        const idx = parseInt(b.dataset.i, 10);
+        const it = items[idx];
+        if (!it) return;
 
-      const body = buildBody();
-      if (body === null) return;
+        const body = buildBody();
+        if (body === null) return;
 
-      track('mail_open', {
-        recipient_name: it.row.isim || it.to,
-        recipient_email: it.to,
-        platform: isMobile ? 'mobile' : 'desktop',
-        is_reopen: items[idx].opened ? 'yes' : 'no',
-        has_signature: (sigName.value.trim() || sigEmail.value.trim()) ? 'yes' : 'no'
+        track('mail_open', {
+          recipient_name: it.row.isim || it.to,
+          recipient_email: it.to,
+          platform: isMobile ? 'mobile' : 'desktop',
+          is_reopen: items[idx].opened ? 'yes' : 'no',
+          has_signature: (sigName.value.trim() || sigEmail.value.trim()) ? 'yes' : 'no'
+        });
+
+        const url = composeUrl(it.to, it.subject, body);
+        if (isMobile) {
+          const a = document.createElement('a');
+          a.href = url;
+          a.rel = 'noopener';
+          a.style.display = 'none';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        } else {
+          window.open(url, '_blank', 'noopener');
+        }
+        markRow(idx, true);
       });
-
-      const url = composeUrl(it.to, it.subject, body);
-      if (isMobile) {
-        const a = document.createElement('a');
-        a.href = url;
-        a.rel = 'noopener';
-        a.style.display = 'none';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-      } else {
-        window.open(url, '_blank', 'noopener');
-      }
-      markRow(idx, true);
     });
-  });
+  }
 
   $('resetProgress').addEventListener('click', () => {
     if (!confirm('İlerleme sıfırlansın mı? Hangilerini gönderdiğin kaydı silinir (gerçek mailler zaten gönderilmiştir, onları etkilemez).')) return;
@@ -840,7 +828,30 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     });
   });
 
-  updateCounters();
+  // ---------- Alıcılar (recipients.txt'den otomatik) ----------
+  fetch('recipients.txt?t=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(text => {
+      items = text.split('\n')
+        .map(l => l.trim())
+        .filter(l => l && !l.startsWith('#'))
+        .map(l => {
+          const [email, isim] = l.split('|').map(s => (s || '').trim());
+          return { email, isim: isim || email };
+        })
+        .filter(r => isEmail(r.email))
+        .map((r, i) => ({
+          idx: i, to: r.email, row: r,
+          subject: render(CAMPAIGN.subject, r),
+          opened: false
+        }));
+      $('countTotal').textContent = items.length;
+      renderListDom();
+    })
+    .catch(err => {
+      console.error('recipients.txt yüklenemedi:', err);
+      $('status').textContent = 'Alıcı listesi yüklenemedi. recipients.txt dosyasının sitenin kök dizininde olduğundan emin ol.';
+    });
 })();
 </script>
 </body>
