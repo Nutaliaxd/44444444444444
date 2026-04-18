@@ -384,27 +384,7 @@ const CAMPAIGN = {
 
   subject: "Dağıtım Talebi: The Amazing Digital Circus: The Last Act — Türkiye'de Kanıtlanmış Hayran Kitlesi",
 
-  body:
-`Merhaba,
-
-GLITCH Productions'ın yapımcılığını üstlendiği 'The Amazing Digital Circus: The Last Act' adlı animasyon filminin Türkiye dağıtımı hakkında görüşünüzü almak istiyorum.
-
-Film, YouTube'da milyarlarca izlenmeye ulaşmış ve küresel ölçekte büyük bir hayran kitlesine sahip 'The Amazing Digital Circus' serisinin final filmi olarak Haziran 2026'da vizyona girecek. Yapımcılar resmi sitelerinde (digitalcircus.movie) henüz dağıtımcısı olmayan bölgelerdeki hayranlardan yerel sinemalara ulaşmalarını açıkça talep ediyor — Türkiye de bu bölgeler arasında.
-
-Türkiye'de somut ve ölçülebilir bir talep olduğunu göstermek isterim:
-
-• Change.org kampanyası: Kısa sürede 1830+ doğrulanmış imza topladı ve hızla büyüyor
-https://www.change.org/p/the-amazing-digital-circus-9-b%C3%B6l%C3%BCm-t%C3%BCrkiye-sinemalar%C4%B1nda-da-yay%C4%B1nlans%C4%B1n
-
-• Sosyal medya etkileşimi: Konuyla ilgili tek bir gönderi 60.000+ görüntülenme, 2.500+ etkileşim, 1000+ beğeni aldı
-
-• Serinin uluslararası başarısı: YouTube'da bölüm başına 300+ milyon izlenme; ürün satışları, cosplay topluluğu ve aktif Türk hayran tabanı mevcut
-
-Bu veriler, filmin Türkiye sinemalarında sınırlı sayıda salonda bile güçlü bir gişe performansı sergileyebileceğini gösteriyor. Firmanızın dağıtım portföyüne uygun bulursanız, GLITCH Productions ile iletişim kurma süreciyle ilgili bilgi almaktan memnuniyet duyarım.
-
-Görüşmek dileğiyle,
-[isim/soyisim]
-Mail Adresim: `,
+  // body: mail-body.txt dosyasından otomatik çekiliyor — metni değiştirmek için HTML'e dokunma, sadece o txt'yi düzenle.
 
   recipients: [
     { email: "tmefilms@tme.com.tr",    isim: "TME Films"        },
@@ -445,7 +425,7 @@ const GH_CACHE_MS = 10 * 60 * 1000; // 10 dk
 
 // Paylaş ayarları
 const SITE_URL = 'https://nutaliaxd.github.io/Dagitimlara-mail-yollama/';
-const SHARE_TEXT = "#tadc #tadcturkiyede #tadctürkiyede The Amazing Digital Circus: The Last Act Türkiye'de vizyona girsin! Dağıtımcılara mail gönder, imza at, destek ol:";
+const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona girsin! Dağıtımcılara mail gönder, imza at, destek ol:";
 </script>
 
 <script>
@@ -672,8 +652,24 @@ const SHARE_TEXT = "#tadc #tadcturkiyede #tadctürkiyede The Amazing Digital Cir
   sigName.addEventListener('input', saveSig);
   sigEmail.addEventListener('input', saveSig);
 
+  // ---------- Mail taslağı (mail-body.txt'den) ----------
+  let cachedBody = null;
+  let bodyLoadError = null;
+  fetch('mail-body.txt?t=' + Date.now())
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(text => { cachedBody = text; })
+    .catch(err => { bodyLoadError = err; console.error('mail-body.txt yüklenemedi:', err); });
+
   function buildBody() {
-    let b = CAMPAIGN.body;
+    if (cachedBody === null) {
+      if (bodyLoadError) {
+        alert('Mail taslağı yüklenemedi. mail-body.txt dosyasının sitenin kök dizininde olduğundan emin ol, sonra sayfayı yenile.');
+      } else {
+        alert('Mail taslağı henüz yükleniyor, 1-2 saniye sonra tekrar dene.');
+      }
+      return null;
+    }
+    let b = cachedBody;
     const name = sigName.value.trim();
     const email = sigEmail.value.trim();
     if (name) b = b.replace(/\[isim\/soyisim\]/g, name);
@@ -755,6 +751,9 @@ const SHARE_TEXT = "#tadc #tadcturkiyede #tadctürkiyede The Amazing Digital Cir
       const it = items[idx];
       if (!it) return;
 
+      const body = buildBody();
+      if (body === null) return;
+
       track('mail_open', {
         recipient_name: it.row.isim || it.to,
         recipient_email: it.to,
@@ -763,7 +762,7 @@ const SHARE_TEXT = "#tadc #tadcturkiyede #tadctürkiyede The Amazing Digital Cir
         has_signature: (sigName.value.trim() || sigEmail.value.trim()) ? 'yes' : 'no'
       });
 
-      const url = composeUrl(it.to, it.subject, buildBody());
+      const url = composeUrl(it.to, it.subject, body);
       if (isMobile) {
         const a = document.createElement('a');
         a.href = url;
