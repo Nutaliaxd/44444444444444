@@ -184,6 +184,10 @@
   .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4;font-weight:500}
   .row.done button:hover{background:#f1f3f5}
   .row.done .who .name::before{content:'✓ ';color:var(--success)}
+  .row .btn-copy{background:#fff;color:var(--muted);border:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .row .btn-copy:hover{background:#f1f3f5;color:var(--text);border-color:#c1c6cc}
+  .row .btn-copy.copied{background:var(--success-bg);color:var(--success);border-color:#b6e0c4}
+  .row .btn-copy svg{width:14px;height:14px;fill:currentColor;display:block}
 
   .footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
   .status{font-size:13px;color:var(--muted);min-height:16px}
@@ -276,7 +280,8 @@
     <div class="done-banner" id="doneBanner">🎉 Tebrikler! Tüm mailler gönderildi. Teşekkürler!</div>
 
     <div class="info" id="howto">
-      <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.
+      <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.<br><br>
+      <b>📋 Mail uygulaman açılmıyorsa</b> (iPhone/iCloud kullanıcıları): Her satırın solundaki kopyala ikonuna bas — alıcı, konu ve metin panoya kopyalanır, kullandığın mail uygulamasına (iCloud web, Outlook vb.) yapıştırabilirsin.
     </div>
 
     <div class="sig-form" id="sigForm">
@@ -623,6 +628,7 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   });
 
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (isMobile) {
     document.querySelector('.desktop-text').style.display = 'none';
     document.querySelector('.mobile-text').style.display = '';
@@ -727,7 +733,10 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
           '<div class="name">' + esc(it.row.isim || it.to) + '</div>' +
           '<div class="email">' + esc(it.to) + '</div>' +
         '</div>' +
-        '<button data-i="' + it.idx + '">' +
+        '<button class="btn-copy" data-i="' + it.idx + '" data-action="copy" title="Maili kopyala (uygulama açılmıyorsa)" aria-label="Mail metnini kopyala">' +
+          '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>' +
+        '</button>' +
+        '<button data-i="' + it.idx + '" data-action="open">' +
           (it.opened ? 'Tekrar aç' : 'Maili Aç') +
         '</button>';
       list.appendChild(row);
@@ -739,7 +748,7 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   function markRow(idx, opened) {
     const row = list.querySelector('.row[data-i="' + idx + '"]');
     if (!row) return;
-    const btn = row.querySelector('button');
+    const btn = row.querySelector('button[data-action="open"]');
     items[idx].opened = opened;
     if (opened) {
       row.classList.add('done');
@@ -778,7 +787,7 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
   function bindRowButtons() {
     list.querySelectorAll('button').forEach((b) => {
-      b.addEventListener('click', () => {
+      b.addEventListener('click', async () => {
         const idx = parseInt(b.dataset.i, 10);
         const it = items[idx];
         if (!it) return;
@@ -786,6 +795,33 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
         const body = buildBody();
         if (body === null) return;
 
+        // Kopyala butonu
+        if (b.dataset.action === 'copy') {
+          const fullText = 'Alıcı: ' + it.to + '\nKonu: ' + it.subject + '\n\n' + body;
+          try {
+            await navigator.clipboard.writeText(fullText);
+          } catch {
+            const ta = document.createElement('textarea');
+            ta.value = fullText;
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch {}
+            ta.remove();
+          }
+          track('mail_copy', {
+            recipient_name: it.row.isim || it.to,
+            recipient_email: it.to,
+            platform: isMobile ? 'mobile' : 'desktop'
+          });
+          const orig = b.innerHTML;
+          b.classList.add('copied');
+          b.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>';
+          setTimeout(() => { b.classList.remove('copied'); b.innerHTML = orig; }, 1800);
+          markRow(idx, true);
+          return;
+        }
+
+        // Maili aç butonu (varsayılan)
         track('mail_open', {
           recipient_name: it.row.isim || it.to,
           recipient_email: it.to,
@@ -795,7 +831,11 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
         });
 
         const url = composeUrl(it.to, it.subject, body);
-        if (isMobile) {
+        if (isIOS) {
+          // iOS Safari gizli anchor'a programatik click'i mailto: için bloklayabiliyor.
+          // window.location.href mailto'yu sayfayı terk etmeden doğru şekilde tetikler.
+          window.location.href = url;
+        } else if (isMobile) {
           const a = document.createElement('a');
           a.href = url;
           a.rel = 'noopener';
