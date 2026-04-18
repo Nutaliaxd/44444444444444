@@ -420,7 +420,7 @@ const CAMPAIGN = {
 // GitHub auto-gallery ayarları
 const GH_REPO = 'Nutaliaxd/Dagitimlara-mail-yollama';
 const GH_PATH = 'images';
-const GH_CACHE_KEY = 'gh-gallery-cache-v1';
+const GH_CACHE_KEY = 'gh-gallery-cache-v2';
 const GH_CACHE_MS = 10 * 60 * 1000; // 10 dk
 
 // Paylaş ayarları
@@ -462,11 +462,11 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
   function renderPosts(rawPosts) {
     const posts = (rawPosts || []).filter(p => p && p.image && p.handle);
+    gallery.innerHTML = '';
     if (posts.length === 0) {
-      galleryCard.style.display = 'none';
+      showGalleryError('Gösterilecek görsel yok.');
       return;
     }
-    gallery.innerHTML = '';
     posts.forEach((p, i) => {
       const profileUrl = p.postUrl || ('https://x.com/' + p.handle);
       const link = document.createElement('a');
@@ -506,21 +506,39 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     });
   }
 
+  function showGalleryError(msg) {
+    gallery.innerHTML = '<div class="gallery-loading">⚠️ ' + esc(msg) + '</div>';
+  }
+
   async function loadGallery() {
+    // Eski cache anahtarlarını temizle (v1 gibi)
+    try { localStorage.removeItem('gh-gallery-cache-v1'); } catch {}
+
     // 1) Cache kontrolü
     try {
       const cached = JSON.parse(localStorage.getItem(GH_CACHE_KEY) || 'null');
-      if (cached && Date.now() - cached.t < GH_CACHE_MS) {
+      if (cached && Date.now() - cached.t < GH_CACHE_MS && Array.isArray(cached.posts) && cached.posts.length > 0) {
+        console.log('[Galeri] Cache kullanıldı,', cached.posts.length, 'görsel');
         renderPosts(cached.posts);
         return;
       }
     } catch {}
 
-    // 2) GitHub API'den çek
+    // 2) GitHub API'den çek (5 sn timeout ile)
+    const ctrl = new AbortController();
+    const timeoutId = setTimeout(() => ctrl.abort(), 5000);
     try {
-      const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH);
-      if (!r.ok) throw new Error('GitHub API hatası: ' + r.status);
+      const apiUrl = 'https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH;
+      console.log('[Galeri] GitHub API çağrılıyor:', apiUrl);
+      const r = await fetch(apiUrl, { signal: ctrl.signal });
+      clearTimeout(timeoutId);
+      if (!r.ok) {
+        const detail = r.status === 403 ? ' (GitHub rate limit dolmuş olabilir, 1 saat sonra tekrar dene)' :
+                       r.status === 404 ? ' (images klasörü bulunamadı)' : '';
+        throw new Error('GitHub API ' + r.status + detail);
+      }
       const files = await r.json();
+      console.log('[Galeri] API döndü,', files.length, 'dosya');
       const imgRe = /\.(jpe?g|png|gif|webp)$/i;
       const posts = files
         .filter(f => f.type === 'file' && imgRe.test(f.name))
@@ -530,11 +548,24 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
           // Dosya adından handle çıkar: uzantıyı at, sonra _N ekini (örn _2, _3) sil
           handle: f.name.replace(imgRe, '').replace(/_\d+$/, '')
         }));
+      console.log('[Galeri] İşlenecek görsel sayısı:', posts.length);
+      if (posts.length === 0) {
+        showGalleryError('images/ klasöründe görsel bulunamadı.');
+        return;
+      }
       try { localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ t: Date.now(), posts })); } catch {}
       renderPosts(posts);
     } catch (e) {
+      clearTimeout(timeoutId);
+      console.error('[Galeri] Hata:', e);
       // 3) GitHub API çalışmadıysa fallback listesine düş
-      renderPosts(CAMPAIGN.featuredPostsFallback);
+      const fb = (CAMPAIGN.featuredPostsFallback || []).filter(p => p && p.image && p.handle);
+      if (fb.length > 0) {
+        console.warn('[Galeri] Fallback listeye düşüldü');
+        renderPosts(fb);
+      } else {
+        showGalleryError('Görseller yüklenemedi: ' + (e.message || 'bilinmeyen hata'));
+      }
     }
   }
 
