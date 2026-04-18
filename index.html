@@ -59,7 +59,6 @@
     0%,100%{box-shadow:0 4px 20px rgba(220,38,38,.35)}
     50%{box-shadow:0 4px 28px rgba(251,191,36,.55)}
   }
-  /* Parıltılı sweep efekti */
   .breaking-banner::before{
     content:'';
     position:absolute;
@@ -74,72 +73,17 @@
     0%{left:-60%}
     60%,100%{left:120%}
   }
-  .breaking-inner{
-    display:flex;align-items:center;gap:14px;
-    position:relative;z-index:1;
-  }
-  .breaking-badge{
-    background:#fbbf24;
-    color:#7c2d12;
-    font-weight:800;
-    font-size:11px;
-    padding:5px 10px;
-    border-radius:4px;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    letter-spacing:.6px;
-    flex:0 0 auto;
-    text-transform:uppercase;
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
-  }
-  .breaking-dot{
-    width:8px;height:8px;
-    background:#dc2626;
-    border-radius:50%;
-    animation:breaking-pulse 1s infinite;
-    box-shadow:0 0 6px rgba(220,38,38,.8);
-  }
-  @keyframes breaking-pulse{
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:.35;transform:scale(.75)}
-  }
+  .breaking-inner{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
+  .breaking-badge{background:#fbbf24;color:#7c2d12;font-weight:800;font-size:11px;padding:5px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.6px;flex:0 0 auto;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .breaking-dot{width:8px;height:8px;background:#dc2626;border-radius:50%;animation:breaking-pulse 1s infinite;box-shadow:0 0 6px rgba(220,38,38,.8)}
+  @keyframes breaking-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
   .breaking-content{flex:1;min-width:0}
-  .breaking-content b{
-    display:block;
-    font-size:15px;
-    font-weight:700;
-    line-height:1.3;
-    margin-bottom:3px;
-    text-shadow:0 1px 2px rgba(0,0,0,.2);
-  }
-  .breaking-content span{
-    font-size:12.5px;
-    opacity:.92;
-    line-height:1.4;
-  }
-  .breaking-arrow{
-    font-size:22px;
-    font-weight:700;
-    animation:breaking-arrow 1.4s ease-in-out infinite;
-    flex:0 0 auto;
-    opacity:.95;
-  }
-  @keyframes breaking-arrow{
-    0%,100%{transform:translateX(0)}
-    50%{transform:translateX(5px)}
-  }
-  @media(min-width:640px){
-    .breaking-content b{font-size:16px}
-    .breaking-content span{font-size:13px}
-  }
-  @media(max-width:420px){
-    .breaking-banner{padding:14px 14px}
-    .breaking-inner{gap:10px}
-    .breaking-content b{font-size:14px}
-    .breaking-content span{font-size:12px}
-    .breaking-arrow{font-size:18px}
-  }
+  .breaking-content b{display:block;font-size:15px;font-weight:700;line-height:1.3;margin-bottom:3px;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+  .breaking-content span{font-size:12.5px;opacity:.92;line-height:1.4}
+  .breaking-arrow{font-size:22px;font-weight:700;animation:breaking-arrow 1.4s ease-in-out infinite;flex:0 0 auto;opacity:.95}
+  @keyframes breaking-arrow{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
+  @media(min-width:640px){.breaking-content b{font-size:16px}.breaking-content span{font-size:13px}}
+  @media(max-width:420px){.breaking-banner{padding:14px 14px}.breaking-inner{gap:10px}.breaking-content b{font-size:14px}.breaking-content span{font-size:12px}.breaking-arrow{font-size:18px}}
 
   /* Change.org kartı */
   .change-card{background:var(--change-bg);border-color:#c4e0c8}
@@ -165,17 +109,35 @@
   .x-btn{background:#fff;color:var(--x-dark);border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
   .x-btn:hover{background:#e5e7eb}
 
+  /* Paylaş kartı */
+  .share-card{background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%);border-color:#fbbf24}
+  .share-card h2{font-size:16px;margin:0 0 6px;color:#78350f;display:flex;align-items:center;gap:8px}
+  .share-sub{font-size:13px;color:#92400e;margin:0 0 14px;line-height:1.5}
+  .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  @media(max-width:480px){.share-grid{grid-template-columns:1fr}}
+  .share-btn{border:none;padding:12px 10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,background .15s;font-family:inherit}
+  .share-btn:hover{transform:translateY(-1px)}
+  .share-btn svg{width:16px;height:16px;fill:currentColor;flex:0 0 auto}
+  .share-wa{background:#25d366;color:#fff}
+  .share-wa:hover{background:#1fb855}
+  .share-x-btn{background:#0f1419;color:#fff}
+  .share-x-btn:hover{background:#2a3a4a}
+  .share-copy{background:#fff;color:#78350f;border:1px solid #fbbf24}
+  .share-copy:hover{background:#fef9e6}
+  .share-copy.copied{background:#d1fae5;color:#065f46;border-color:#10b981}
+
   /* Öne çıkan paylaşımlar — resim galerisi */
   .gallery-card h2{font-size:16px;margin:0 0 4px;display:flex;align-items:center;gap:8px}
   .gallery-card h2 svg{width:18px;height:18px;fill:var(--text)}
   .gallery-card .sub{color:var(--muted);font-size:13px;margin-bottom:14px}
-  .gallery{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;-webkit-overflow-scrolling:touch;scroll-padding-left:2px}
+  .gallery{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;padding-bottom:10px;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scroll-padding:0 4px}
   .gallery::-webkit-scrollbar{height:6px}
   .gallery::-webkit-scrollbar-track{background:#f1f3f5;border-radius:3px}
-  .gallery::-webkit-scrollbar-thumb{background:#c1c7cd;border-radius:3px}
-  .gallery::-webkit-scrollbar-thumb:hover{background:#9aa0a6}
-  .post-item{display:block;flex:0 0 200px;scroll-snap-align:start;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s,border-color .15s;background:#fff}
-  @media(min-width:520px){ .post-item{flex:0 0 220px} }
+  .gallery::-webkit-scrollbar-thumb{background:#c1c6cc;border-radius:3px}
+  .gallery::-webkit-scrollbar-thumb:hover{background:#a0a6ad}
+  .gallery-loading{color:var(--muted);font-size:13px;text-align:center;padding:20px;font-style:italic;flex:1 0 100%}
+  .post-item{display:block;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s,border-color .15s;background:#fff;flex:0 0 220px;scroll-snap-align:start}
+  @media(max-width:480px){.post-item{flex:0 0 75%}}
   .post-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#b6cdf5}
   .post-img-wrap{position:relative;aspect-ratio:1/1;background:#f1f3f5;overflow:hidden}
   .post-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
@@ -254,9 +216,7 @@
 <body>
 <div class="wrap">
 
-  <!-- ============================================
-       SON DAKİKA BANNER — dikkat çekici, en üstte
-       ============================================ -->
+  <!-- SON DAKİKA BANNER -->
   <a id="breakingBanner" class="breaking-banner"
      href="https://x.com/TADCTurkiyede/status/2044730264727793844"
      target="_blank" rel="noopener">
@@ -319,7 +279,6 @@
       <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.
     </div>
 
-    <!-- İmza formu (opsiyonel) -->
     <div class="sig-form" id="sigForm">
       <button type="button" class="sig-toggle" id="sigToggle">
         <span>✏️ <b>Opsiyonel ama tavsiye edilir:</b> Ad ve mail adresini gir, otomatik imzalansın</span>
@@ -342,6 +301,26 @@
     </div>
   </div>
 
+  <!-- Paylaş -->
+  <div class="card share-card">
+    <h2>📣 Sen de yay — daha çok sesle daha çok dağıtımcı ikna olur</h2>
+    <p class="share-sub">Bu sayfayı arkadaşlarınla paylaş. 3 kişiye gönder, her biri 3 kişiye daha göndersin — kampanya exponansiyel yayılsın.</p>
+    <div class="share-grid">
+      <button class="share-btn share-wa" data-share="whatsapp">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        WhatsApp
+      </button>
+      <button class="share-btn share-x-btn" data-share="x">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        X'te Paylaş
+      </button>
+      <button class="share-btn share-copy" data-share="copy">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        Linki Kopyala
+      </button>
+    </div>
+  </div>
+
   <!-- Öne çıkan görseller galerisi -->
   <div class="card gallery-card" id="galleryCard">
     <h2>
@@ -349,7 +328,9 @@
       Hayran paylaşımları
     </h2>
     <div class="sub">Kampanyaya destek veren hayranların çizimleri ve paylaşımları. Görsele tıkla büyütmek için, kullanıcı adına tıkla sanatçının profiline gitmek için.</div>
-    <div class="gallery" id="gallery"></div>
+    <div class="gallery" id="gallery">
+      <div class="gallery-loading">Görseller yükleniyor...</div>
+    </div>
     <a class="see-all-x" href="https://x.com/TADCTurkiyede/status/2044681556132794744" target="_blank" rel="noopener">Daha fazlası için @TADCTurkiyede →</a>
   </div>
 
@@ -390,7 +371,10 @@
 </div>
 
 <!-- ============================================================
-     DÜZENLENECEK TEK KISIM — alıcılar, mesaj ve galeri aşağıda
+     DÜZENLENECEK TEK KISIM — alıcılar ve mesaj aşağıda.
+     Galeri artık otomatik: images/ klasörüne resim at, otomatik eklenir.
+     Dosya adı = X kullanıcı adı. Aynı kişiden birden fazla resim için:
+     handle.jpg (ilk) + handle_2.jpg, handle_3.jpg (sonrakiler)
      ============================================================ -->
 <script>
 const CAMPAIGN = {
@@ -434,47 +418,36 @@ Mail Adresim: `,
     { email: "info@a90pictures.com",   isim: "A90 Pictures"      }
   ],
 
-  // ============================================================
-  // Hayran paylaşımları / galeri
-  // ============================================================
-  // Yeni bir görsel eklemek için aşağıdaki formatta yeni bir satır ekle:
-  //   { image: "images/dosya-adi.jpg", handle: "kullaniciAdi" }
-  //
-  // - image: Repo içindeki resim dosyasının yolu. Önerilen yol:
-  //          Repo'da "images" adında bir klasör oluştur, resimleri oraya yükle.
-  //          Örn: images/ali-cizim.jpg
-  // - handle: Resmi yapanın X kullanıcı adı (@ işareti olmadan).
-  //           Kullanıcı adına tıklanınca x.com/<handle> adresine gider.
-  // - postUrl (opsiyonel): Resmin orijinal post linki. Verilmezse profile gider.
-  //           Örn: postUrl: "https://x.com/kullanici/status/1234567890"
-  // - caption (opsiyonel): Görselin altına küçük bir not eklenebilir.
-  //
-  // Listede en üsttekiler sitede en üstte görünür.
-  // ============================================================
-  featuredPosts: [
-  { image: "images/CloudYT001.png", handle: "CloudYT001" },
-  { image: "images/Inhundefender.jpg", handle: "Inhundefender" },
-  { image: "images/Inhundefender2.jpg", handle: "Inhundefender" },
-  { image: "images/shelixsaydo1.jpg", handle: "shelixsaydo" },
-  { image: "images/YakubRoblox1.jpg", handle: "YakubRoblox" },
-  { image: "images/YakubRoblox2.jpg", handle: "YakubRoblox" },
-  { image: "images/YakubRoblox3.jpg", handle: "YakubRoblox" },
-  { image: "images/YakubRoblox4.jpg", handle: "YakubRoblox" },
-  { image: "images/YakubRoblox5.jpg", handle: "YakubRoblox" },
-  { image: "images/Valna01.png", handle: "Valna0" },
-  { image: "images/Valna02.jpg", handle: "Valna0" },
-  { image: "images/bibiskoo1.jpg", handle: "bibiskoo" }
-    // Örnekler — kendi resimlerinle değiştir:
-    // { image: "images/ornek1.jpg", handle: "ornekKullanici1" },
-    // { image: "images/ornek2.png", handle: "ornekKullanici2", postUrl: "https://x.com/ornekKullanici2/status/1234567890" },
-    // { image: "images/ornek3.jpg", handle: "ornekKullanici3", caption: "Cosplay çalışması" },
+  // GitHub API erişilemezse kullanılacak yedek liste (manuel).
+  // Normalde buraya dokunmana gerek yok; images/ klasörüne resim atınca
+  // otomatik eklenecek. Bu sadece GitHub API çökerse gösterilecek liste.
+  featuredPostsFallback: [
+    { image: "images/CloudYT001.png", handle: "CloudYT001" },
+    { image: "images/Inhundefender.jpg", handle: "Inhundefender" },
+    { image: "images/Inhundefender_2.jpg", handle: "Inhundefender" },
+    { image: "images/shelixsaydo.jpg", handle: "shelixsaydo" },
+    { image: "images/YakubRoblox.jpg", handle: "YakubRoblox" },
+    { image: "images/YakubRoblox_2.jpg", handle: "YakubRoblox" },
+    { image: "images/YakubRoblox_3.jpg", handle: "YakubRoblox" },
+    { image: "images/YakubRoblox_4.jpg", handle: "YakubRoblox" },
+    { image: "images/YakubRoblox_5.jpg", handle: "YakubRoblox" },
+    { image: "images/Valna0.png", handle: "Valna0" },
+    { image: "images/Valna0_2.jpg", handle: "Valna0" },
+    { image: "images/bibiskoo.jpg", handle: "bibiskoo" }
   ]
 };
+
+// GitHub auto-gallery ayarları
+const GH_REPO = 'Nutaliaxd/Dagitimlara-mail-yollama';
+const GH_PATH = 'images';
+const GH_CACHE_KEY = 'gh-gallery-cache-v1';
+const GH_CACHE_MS = 10 * 60 * 1000; // 10 dk
+
+// Paylaş ayarları
+const SITE_URL = 'https://nutaliaxd.github.io/Dagitimlara-mail-yollama/';
+const SHARE_TEXT = "#tadc #tadcturkiyede #tadctürkiyede The Amazing Digital Circus: The Last Act Türkiye'de vizyona girsin! Dağıtımcılara mail gönder, imza at, destek ol:";
 </script>
 
-<!-- ============================================================
-     Aşağısına DOKUNMA — mantık burada
-     ============================================================ -->
 <script>
 (function(){
   const $ = (id) => document.getElementById(id);
@@ -488,35 +461,32 @@ Mail Adresim: `,
     catch(e) {}
   }
 
-  // Breaking banner tıklama takibi
   const breakingBanner = $('breakingBanner');
-  if (breakingBanner) {
-    breakingBanner.addEventListener('click', () => track('breaking_news_click'));
-  }
+  if (breakingBanner) breakingBanner.addEventListener('click', () => track('breaking_news_click'));
 
   // ---------- Change.org canlı imza sayısı ----------
   fetch('signatures.json?t=' + Date.now())
     .then(r => r.ok ? r.json() : null)
     .then(data => {
       if (data && typeof data.count === 'number') {
-        const formatted = data.count.toLocaleString('tr-TR');
-        $('sigCount').innerHTML = '<span class="live-dot"></span>' + formatted + '+';
+        $('sigCount').innerHTML = '<span class="live-dot"></span>' + data.count.toLocaleString('tr-TR') + '+';
       } else {
         $('sigCount').textContent = '2.335+';
       }
     })
-    .catch(() => {
-      $('sigCount').textContent = '2.335+';
-    });
+    .catch(() => { $('sigCount').textContent = '2.335+'; });
 
-  // ---------- Galeri ----------
+  // ---------- Galeri (GitHub API'den otomatik) ----------
   const gallery = $('gallery');
   const galleryCard = $('galleryCard');
-  const posts = (CAMPAIGN.featuredPosts || []).filter(p => p && p.image && p.handle);
 
-  if (posts.length === 0) {
-    galleryCard.style.display = 'none';
-  } else {
+  function renderPosts(rawPosts) {
+    const posts = (rawPosts || []).filter(p => p && p.image && p.handle);
+    if (posts.length === 0) {
+      galleryCard.style.display = 'none';
+      return;
+    }
+    gallery.innerHTML = '';
     posts.forEach((p, i) => {
       const profileUrl = p.postUrl || ('https://x.com/' + p.handle);
       const link = document.createElement('a');
@@ -534,14 +504,12 @@ Mail Adresim: `,
           (p.caption ? '<span class="post-ext" title="' + esc(p.caption) + '">' + esc(p.caption) + '</span>' : '<span class="post-ext">→</span>') +
         '</div>';
 
-      // Resim hata verirse broken placeholder
       const img = link.querySelector('img');
       img.addEventListener('error', () => {
         const wrap = img.parentElement;
         wrap.innerHTML = '<div class="broken">🖼️<br>Görsel yüklenemedi<br><small>' + esc(p.image) + '</small></div>';
       });
 
-      // Kullanıcı adına tıklanınca profile, resme tıklanınca lightbox
       img.parentElement.style.cursor = 'zoom-in';
       img.parentElement.addEventListener('click', (e) => {
         e.preventDefault();
@@ -556,6 +524,38 @@ Mail Adresim: `,
 
       gallery.appendChild(link);
     });
+  }
+
+  async function loadGallery() {
+    // 1) Cache kontrolü
+    try {
+      const cached = JSON.parse(localStorage.getItem(GH_CACHE_KEY) || 'null');
+      if (cached && Date.now() - cached.t < GH_CACHE_MS) {
+        renderPosts(cached.posts);
+        return;
+      }
+    } catch {}
+
+    // 2) GitHub API'den çek
+    try {
+      const r = await fetch('https://api.github.com/repos/' + GH_REPO + '/contents/' + GH_PATH);
+      if (!r.ok) throw new Error('GitHub API hatası: ' + r.status);
+      const files = await r.json();
+      const imgRe = /\.(jpe?g|png|gif|webp)$/i;
+      const posts = files
+        .filter(f => f.type === 'file' && imgRe.test(f.name))
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+        .map(f => ({
+          image: GH_PATH + '/' + f.name,
+          // Dosya adından handle çıkar: uzantıyı at, sonra _N ekini (örn _2, _3) sil
+          handle: f.name.replace(imgRe, '').replace(/_\d+$/, '')
+        }));
+      try { localStorage.setItem(GH_CACHE_KEY, JSON.stringify({ t: Date.now(), posts })); } catch {}
+      renderPosts(posts);
+    } catch (e) {
+      // 3) GitHub API çalışmadıysa fallback listesine düş
+      renderPosts(CAMPAIGN.featuredPostsFallback);
+    }
   }
 
   // Lightbox
@@ -576,6 +576,36 @@ Mail Adresim: `,
   });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+
+  loadGallery();
+
+  // ---------- Paylaş butonları ----------
+  document.querySelectorAll('[data-share]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const type = btn.dataset.share;
+      track('share_click', { platform: type });
+      if (type === 'whatsapp') {
+        window.open('https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' ' + SITE_URL), '_blank', 'noopener');
+      } else if (type === 'x') {
+        window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(SHARE_TEXT) + '&url=' + encodeURIComponent(SITE_URL), '_blank', 'noopener');
+      } else if (type === 'copy') {
+        try {
+          await navigator.clipboard.writeText(SITE_URL);
+        } catch {
+          const ta = document.createElement('textarea');
+          ta.value = SITE_URL;
+          document.body.appendChild(ta);
+          ta.select();
+          try { document.execCommand('copy'); } catch {}
+          ta.remove();
+        }
+        const orig = btn.innerHTML;
+        btn.classList.add('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>Kopyalandı!';
+        setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2000);
+      }
+    });
   });
 
   const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
@@ -638,9 +668,7 @@ Mail Adresim: `,
   if (savedSig.email) sigEmail.value = savedSig.email;
   if (savedSig.name || savedSig.email) sigForm.classList.add('open');
 
-  sigToggle.addEventListener('click', () => {
-    sigForm.classList.toggle('open');
-  });
+  sigToggle.addEventListener('click', () => { sigForm.classList.toggle('open'); });
   sigName.addEventListener('input', saveSig);
   sigEmail.addEventListener('input', saveSig);
 
@@ -648,12 +676,8 @@ Mail Adresim: `,
     let b = CAMPAIGN.body;
     const name = sigName.value.trim();
     const email = sigEmail.value.trim();
-    if (name) {
-      b = b.replace(/\[isim\/soyisim\]/g, name);
-    }
-    if (email) {
-      b = b.replace(/Mail Adresim:[^\n]*/g, 'Mail Adresim: ' + email);
-    }
+    if (name) b = b.replace(/\[isim\/soyisim\]/g, name);
+    if (email) b = b.replace(/Mail Adresim:[^\n]*/g, 'Mail Adresim: ' + email);
     return b;
   }
 
@@ -669,7 +693,6 @@ Mail Adresim: `,
   const progress = loadProgress();
   items.forEach(it => { if (progress[it.to]) it.opened = true; });
 
-  // ---------- Liste render ----------
   const list = $('list');
   items.forEach((it) => {
     const row = document.createElement('div');
