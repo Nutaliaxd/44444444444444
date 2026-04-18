@@ -184,7 +184,7 @@
   .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4;font-weight:500}
   .row.done button:hover{background:#f1f3f5}
   .row.done .who .name::before{content:'✓ ';color:var(--success)}
-  .row .btn-copy{background:#fff;color:var(--muted);border:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .row .btn-copy{background:#fff;color:var(--muted);border:1px solid var(--border);padding:10px 12px;display:none;align-items:center;justify-content:center;flex:0 0 auto}
   .row .btn-copy:hover{background:#f1f3f5;color:var(--text);border-color:#c1c6cc}
   .row .btn-copy.copied{background:var(--success-bg);color:var(--success);border-color:#b6e0c4}
   .row .btn-copy svg{width:14px;height:14px;fill:currentColor;display:block}
@@ -280,8 +280,11 @@
     <div class="done-banner" id="doneBanner">🎉 Tebrikler! Tüm mailler gönderildi. Teşekkürler!</div>
 
     <div class="info" id="howto">
-      <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.<br><br>
+      <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.
+      <!-- Kopyala butonu geçici olarak deaktif:
+      <br><br>
       <b>📋 Mail uygulaman açılmıyorsa</b> (iPhone/iCloud kullanıcıları): Her satırın solundaki kopyala ikonuna bas — alıcı, konu ve metin panoya kopyalanır, kullandığın mail uygulamasına (iCloud web, Outlook vb.) yapıştırabilirsin.
+      -->
     </div>
 
     <div class="sig-form" id="sigForm">
