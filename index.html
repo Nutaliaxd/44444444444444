@@ -2,7 +2,10 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1a73e8" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <title>TADC Türkiye Dağıtım Kampanyası</title>
 
 <!-- Google tag (gtag.js) -->
@@ -24,15 +27,22 @@
     --danger:#d93025; --danger-bg:#fde8e8;
     --x-dark:#0f1419;
     --change:#245b2a; --change-bg:#f0f8f1;
+    --touch-target: 44px;
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
   }
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;padding:24px 16px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+  body{margin:0;min-height:100vh;padding:24px 16px calc(24px + var(--safe-area-inset-bottom));font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
   .wrap{max-width:640px;margin:0 auto}
   h1{font-size:22px;margin:0 0 8px;line-height:1.3}
   @media(min-width:640px){ body{padding:32px 20px} h1{font-size:26px} }
   .desc{color:var(--muted);font-size:14px;line-height:1.5;margin-bottom:20px}
   .card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:16px}
   @media(min-width:640px){ .card{padding:24px} }
+
+  /* Prefers reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
 
   /* ============================================
      SON DAKİKA / BREAKING NEWS BANNER
@@ -55,6 +65,10 @@
     transform:translateY(-1px);
     box-shadow:0 6px 26px rgba(251,191,36,.55);
   }
+  .breaking-banner:active {
+    transform: translateY(1px);
+    box-shadow:0 2px 12px rgba(251,191,36,.5);
+  }
   @keyframes breaking-glow{
     0%,100%{box-shadow:0 4px 20px rgba(220,38,38,.35)}
     50%{box-shadow:0 4px 28px rgba(251,191,36,.55)}
@@ -74,45 +88,47 @@
     60%,100%{left:120%}
   }
   .breaking-inner{display:flex;align-items:center;gap:14px;position:relative;z-index:1}
-  .breaking-badge{background:#fbbf24;color:#7c2d12;font-weight:800;font-size:11px;padding:5px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.6px;flex:0 0 auto;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .breaking-badge{background:#fbbf24;color:#7c2d12;font-weight:800;font-size:12px;padding:5px 10px;border-radius:4px;display:inline-flex;align-items:center;gap:6px;letter-spacing:.6px;flex:0 0 auto;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,.15)}
   .breaking-dot{width:8px;height:8px;background:#dc2626;border-radius:50%;animation:breaking-pulse 1s infinite;box-shadow:0 0 6px rgba(220,38,38,.8)}
   @keyframes breaking-pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.75)}}
   .breaking-content{flex:1;min-width:0}
   .breaking-content b{display:block;font-size:15px;font-weight:700;line-height:1.3;margin-bottom:3px;text-shadow:0 1px 2px rgba(0,0,0,.2)}
-  .breaking-content span{font-size:12.5px;opacity:.92;line-height:1.4}
+  .breaking-content span{font-size:13px;opacity:.92;line-height:1.4}
   .breaking-arrow{font-size:22px;font-weight:700;animation:breaking-arrow 1.4s ease-in-out infinite;flex:0 0 auto;opacity:.95}
   @keyframes breaking-arrow{0%,100%{transform:translateX(0)}50%{transform:translateX(5px)}}
-  @media(min-width:640px){.breaking-content b{font-size:16px}.breaking-content span{font-size:13px}}
-  @media(max-width:420px){.breaking-banner{padding:14px 14px}.breaking-inner{gap:10px}.breaking-content b{font-size:14px}.breaking-content span{font-size:12px}.breaking-arrow{font-size:18px}}
+  @media(min-width:640px){.breaking-content b{font-size:16px}.breaking-content span{font-size:14px}}
+  @media(max-width:420px){.breaking-banner{padding:14px 14px}.breaking-inner{gap:10px}.breaking-content b{font-size:14px}.breaking-content span{font-size:13px}.breaking-arrow{font-size:18px}}
 
   /* Change.org kartı */
   .change-card{background:var(--change-bg);border-color:#c4e0c8}
   .change-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .change-icon{flex:0 0 40px;width:40px;height:40px;border-radius:50%;background:var(--change);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700}
-  .change-text{flex:1;min-width:200px}
+  .change-text{flex:1;min-width:0} /* min-width:200px kaldırıldı */
   .change-text b{display:block;color:var(--change);margin-bottom:2px}
   .change-text span{color:var(--muted);font-size:13px}
   .change-text .live-count{color:var(--change);font-weight:600}
   .change-text .live-dot{display:inline-block;width:6px;height:6px;background:var(--change);border-radius:50%;margin-right:4px;vertical-align:middle;animation:pulse 2s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-  .change-btn{background:var(--change);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap}
+  .change-btn{background:var(--change);color:#fff;border:none;padding:10px 18px;border-radius:6px;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s, transform .1s}
   .change-btn:hover{background:#1d4a22}
+  .change-btn:active{transform:scale(0.97)}
 
   /* X kartı */
   .x-card{background:var(--x-dark);border-color:var(--x-dark);color:#fff}
   .x-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
   .x-icon{flex:0 0 40px;width:40px;height:40px;display:flex;align-items:center;justify-content:center}
   .x-icon svg{width:28px;height:28px;fill:#fff}
-  .x-text{flex:1;min-width:200px;color:#fff}
+  .x-text{flex:1;min-width:0} /* min-width kaldırıldı */
   .x-text b{display:block;margin-bottom:2px}
   .x-text span{color:#a7b1bc;font-size:13px}
-  .x-btn{background:#fff;color:var(--x-dark);border:none;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap}
+  .x-btn{background:#fff;color:var(--x-dark);border:none;padding:10px 18px;border-radius:20px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;transition:background .15s, transform .1s}
   .x-btn:hover{background:#e5e7eb}
+  .x-btn:active{transform:scale(0.97)}
 
   /* Glitch CTA kartı */
   .glitch-card{background:linear-gradient(135deg,#7c3aed 0%,#c026d3 100%);border-color:#6d28d9;color:#fff;position:relative;overflow:hidden}
   .glitch-card::before{content:'';position:absolute;top:0;left:-60%;width:45%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:skewX(-20deg);animation:breaking-sweep 4s infinite;pointer-events:none}
-  .glitch-badge{position:absolute;top:10px;right:12px;background:#fbbf24;color:#7c2d12;font-size:11px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:.5px;z-index:1}
+  .glitch-badge{position:absolute;top:10px;right:12px;background:#fbbf24;color:#7c2d12;font-size:12px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:.5px;z-index:1}
   .glitch-inner{display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:relative;z-index:1}
   .glitch-top{display:flex;align-items:flex-start;gap:14px;position:relative;z-index:1;margin-bottom:14px}
   .glitch-actions{display:flex;gap:10px;position:relative;z-index:1}
@@ -122,17 +138,19 @@
     .glitch-actions .glitch-btn{flex:0 0 auto;width:100%}
   }
   .glitch-icon{flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;font-size:22px}
-  .glitch-text{flex:1;min-width:200px;color:#fff}
+  .glitch-text{flex:1;min-width:0}
   .glitch-text b{display:block;margin-bottom:3px;font-size:15px}
   .glitch-text span{color:rgba(255,255,255,.93);font-size:13px;line-height:1.5}
   .glitch-text span b{display:inline;margin:0;font-size:inherit;color:#fde047}
-  .glitch-source{display:inline-block;margin-top:8px;color:#fde047;font-size:12.5px;font-weight:600;text-decoration:underline;text-decoration-color:rgba(253,224,71,.4);text-underline-offset:3px;transition:text-decoration-color .15s}
+  .glitch-source{display:inline-block;margin-top:8px;color:#fde047;font-size:13px;font-weight:600;text-decoration:underline;text-decoration-color:rgba(253,224,71,.4);text-underline-offset:3px;transition:text-decoration-color .15s}
   .glitch-source:hover{text-decoration-color:#fde047}
-  .glitch-btn{background:#fff;color:#7c3aed;border:none;padding:11px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s}
+  .glitch-btn{background:#fff;color:#7c3aed;border:none;padding:11px 18px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s, transform .1s}
   .glitch-btn:hover{background:#f3e8ff}
+  .glitch-btn:active{transform:scale(0.97)}
   .glitch-btn.done{background:var(--success-bg);color:var(--success)}
   .glitch-btn-alt{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.5)}
   .glitch-btn-alt:hover{background:rgba(255,255,255,.28)}
+  .glitch-btn-alt:active{transform:scale(0.97)}
   .glitch-btn-alt.done{background:var(--success-bg);color:var(--success);border-color:transparent}
 
   /* Paylaş kartı */
@@ -141,9 +159,10 @@
   .share-sub{font-size:13px;color:#92400e;margin:0 0 14px;line-height:1.5}
   .share-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
   @media(max-width:480px){.share-grid{grid-template-columns:1fr}}
-  .share-btn{border:none;padding:12px 10px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,background .15s;font-family:inherit}
+  .share-btn{border:none;padding:12px 10px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,background .15s;font-family:inherit;min-height:var(--touch-target)}
   .share-btn:hover{transform:translateY(-1px)}
-  .share-btn svg{width:16px;height:16px;fill:currentColor;flex:0 0 auto}
+  .share-btn:active{transform:scale(0.97)}
+  .share-btn svg{width:18px;height:18px;fill:currentColor;flex:0 0 auto}
   .share-wa{background:#25d366;color:#fff}
   .share-wa:hover{background:#1fb855}
   .share-x-btn{background:#0f1419;color:#fff}
@@ -165,60 +184,65 @@
   .post-item{display:block;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-decoration:none;color:var(--text);transition:transform .15s,box-shadow .15s,border-color .15s;background:#fff;flex:0 0 220px;scroll-snap-align:start}
   @media(max-width:480px){.post-item{flex:0 0 75%}}
   .post-item:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.08);border-color:#b6cdf5}
+  .post-item:active{transform:translateY(0);box-shadow:none}
   .post-img-wrap{position:relative;aspect-ratio:1/1;background:#f1f3f5;overflow:hidden}
   .post-img-wrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-  .post-img-wrap .broken{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:12px;gap:6px;padding:10px;text-align:center}
-  .post-meta{padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:12px}
-  .post-meta svg{width:12px;height:12px;fill:var(--muted);flex:0 0 auto}
+  .post-img-wrap .broken{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:13px;gap:6px;padding:10px;text-align:center}
+  .post-meta{padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px}
+  .post-meta svg{width:14px;height:14px;fill:var(--muted);flex:0 0 auto}
   .post-handle{color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .post-ext{color:var(--muted);margin-left:auto;flex:0 0 auto}
   .gallery-empty{color:var(--muted);font-size:13px;text-align:center;padding:20px;font-style:italic}
-  .see-all-x{display:inline-block;margin-top:14px;color:var(--accent);font-size:13px;text-decoration:none;font-weight:500}
+  .see-all-x{display:inline-block;margin-top:14px;color:var(--accent);font-size:14px;text-decoration:none;font-weight:500;padding:6px 0}
   .see-all-x:hover{text-decoration:underline}
 
   /* Ana kart */
   .header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:16px}
   .count{font-size:32px;font-weight:600;line-height:1}
-  .count-label{color:var(--muted);font-size:13px}
+  .count-label{color:var(--muted);font-size:14px}
 
-  .info{background:#eef4ff;border:1px solid #b6cdf5;color:#1e40af;padding:12px;border-radius:6px;font-size:13px;line-height:1.5;margin-bottom:16px}
+  .info{background:#eef4ff;border:1px solid #b6cdf5;color:#1e40af;padding:14px;border-radius:6px;font-size:14px;line-height:1.5;margin-bottom:16px}
 
   .progress{background:#f1f3f5;border-radius:20px;height:8px;overflow:hidden;margin-bottom:16px}
   .progress-bar{background:var(--success);height:100%;width:0;transition:width .3s}
 
   /* İmza formu */
   .sig-form{border:1px solid var(--border);border-radius:8px;margin-bottom:16px;overflow:hidden}
-  .sig-toggle{width:100%;background:#fafbfc;border:none;padding:12px 14px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--text);font-weight:500}
+  .sig-toggle{width:100%;background:#fafbfc;border:none;padding:14px 14px;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;color:var(--text);font-weight:500;min-height:var(--touch-target)}
   .sig-toggle:hover{background:#f1f3f5}
+  .sig-toggle:active{background:#e9eaed}
   .sig-toggle .chev{transition:transform .2s;color:var(--muted)}
   .sig-form.open .sig-toggle .chev{transform:rotate(180deg)}
   .sig-body{padding:0 14px;max-height:0;overflow:hidden;transition:max-height .25s,padding .25s}
   .sig-form.open .sig-body{max-height:300px;padding:12px 14px 14px}
-  .sig-body label{display:block;font-size:12px;color:var(--muted);margin:0 0 4px}
-  .sig-body input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;margin-bottom:10px}
+  .sig-body label{display:block;font-size:13px;color:var(--muted);margin:0 0 4px}
+  .sig-body input{width:100%;padding:10px 10px;border:1px solid var(--border);border-radius:6px;font-size:16px;font-family:inherit;margin-bottom:10px} /* 16px for iOS zoom fix */
   .sig-body input:focus{outline:none;border-color:var(--accent)}
-  .sig-body .sig-note{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .sig-body .sig-note{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
 
   .list{display:flex;flex-direction:column;gap:8px}
   .row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border:1px solid var(--border);border-radius:8px;background:#fff;transition:background .15s,border-color .15s}
   .row .who{flex:1;min-width:0}
   .row .who .name{font-weight:500;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .row .who .email{color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .row button{background:var(--accent);color:#fff;border:1px solid var(--accent);padding:10px 18px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:500;white-space:nowrap;transition:background .15s}
+  .row .who .email{color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row button{background:var(--accent);color:#fff;border:1px solid var(--accent);padding:12px 18px;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;white-space:nowrap;transition:background .15s, transform .1s;min-height:var(--touch-target)}
   .row button:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+  .row button:active{transform:scale(0.97)}
   .row.done{background:var(--success-bg);border-color:#b6e0c4}
   .row.done button{background:#fff;color:var(--success);border-color:#b6e0c4;font-weight:500}
   .row.done button:hover{background:#f1f3f5}
   .row.done .who .name::before{content:'✓ ';color:var(--success)}
-  .row .btn-copy{background:#fff;color:var(--muted);border:1px solid var(--border);padding:10px 12px;display:none;align-items:center;justify-content:center;flex:0 0 auto}
+  .row .btn-copy{background:#fff;color:var(--muted);border:1px solid var(--border);padding:12px 12px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:var(--touch-target);min-width:var(--touch-target)} /* mobilde görünür */
   .row .btn-copy:hover{background:#f1f3f5;color:var(--text);border-color:#c1c6cc}
+  .row .btn-copy:active{transform:scale(0.97)}
   .row .btn-copy.copied{background:var(--success-bg);color:var(--success);border-color:#b6e0c4}
-  .row .btn-copy svg{width:14px;height:14px;fill:currentColor;display:block}
+  .row .btn-copy svg{width:16px;height:16px;fill:currentColor;display:block}
 
   .footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-  .status{font-size:13px;color:var(--muted);min-height:16px}
-  .link-btn{background:transparent;color:var(--muted);border:none;font-size:12px;cursor:pointer;text-decoration:underline;padding:4px}
+  .status{font-size:14px;color:var(--muted);min-height:16px}
+  .link-btn{background:transparent;color:var(--muted);border:none;font-size:14px;cursor:pointer;text-decoration:underline;padding:8px;min-height:var(--touch-target);min-width:var(--touch-target)}
   .link-btn:hover{color:var(--text)}
+  .link-btn:active{color:var(--accent)}
 
   .done-banner{background:var(--success-bg);border:1px solid #b6e0c4;color:var(--success);padding:14px;border-radius:8px;text-align:center;font-weight:500;margin-bottom:16px;font-size:15px;display:none}
 
@@ -227,37 +251,46 @@
   .gmodal.open{display:flex}
   .gmodal-content{background:#fff;border-radius:12px;max-width:520px;width:100%;padding:22px 20px 20px;position:relative;margin:20px auto;box-shadow:0 12px 40px rgba(0,0,0,.3)}
   @media(min-width:640px){.gmodal-content{padding:24px}}
-  .gmodal-close{position:absolute;top:10px;right:10px;background:none;border:none;width:32px;height:32px;font-size:22px;cursor:pointer;color:var(--muted);border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1}
+  .gmodal-close{position:absolute;top:10px;right:10px;background:none;border:none;width:44px;height:44px;font-size:22px;cursor:pointer;color:var(--muted);border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .15s}
   .gmodal-close:hover{background:#f1f3f5;color:var(--text)}
-  .gmodal-content h2{font-size:17px;margin:0 0 6px;color:var(--text);padding-right:32px}
+  .gmodal-close:active{background:#e1e3e8}
+  .gmodal-content h2{font-size:18px;margin:0 0 6px;color:var(--text);padding-right:32px}
   .gmodal-sub{font-size:13px;color:var(--muted);line-height:1.5;margin:0 0 14px}
   .gmodal-sub b{color:var(--text)}
-  .gmodal-open-btn{display:block;background:linear-gradient(135deg,#7c3aed 0%,#c026d3 100%);color:#fff;padding:12px 14px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;text-align:center;margin-bottom:16px;transition:opacity .15s}
+  .gmodal-open-btn{display:block;background:linear-gradient(135deg,#7c3aed 0%,#c026d3 100%);color:#fff;padding:14px 14px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600;text-align:center;margin-bottom:16px;transition:opacity .15s, transform .1s;min-height:var(--touch-target)}
   .gmodal-open-btn:hover{opacity:.9}
+  .gmodal-open-btn:active{transform:scale(0.98)}
   .gmodal-open-btn.opened{background:var(--success-bg);color:var(--success)}
   .gfield{margin-bottom:10px}
-  .gfield label{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .gfield label{display:block;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:4px}
   .gfield-row{display:flex;gap:6px;align-items:stretch}
-  .gfield-row input,.gfield-row textarea{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:#fafbfc;color:var(--text)}
+  @media(max-width:480px){
+    .gfield-row{flex-direction:column}
+    .gfield-row .gfield-copy{width:100%}
+  }
+  .gfield-row input,.gfield-row textarea{flex:1;min-width:0;padding:10px 10px;border:1px solid var(--border);border-radius:6px;font-size:16px;font-family:inherit;background:#fafbfc;color:var(--text)} /* 16px fix */
   .gfield-row input:focus,.gfield-row textarea:focus{outline:none;border-color:var(--accent);background:#fff}
   .gfield-row textarea{resize:vertical;min-height:120px;max-height:280px;line-height:1.5}
-  .gfield-copy{background:var(--accent);color:#fff;border:none;padding:0 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex:0 0 auto;transition:background .15s}
+  .gfield-copy{background:var(--accent);color:#fff;border:none;padding:0 14px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;flex:0 0 auto;transition:background .15s, transform .1s;min-height:var(--touch-target)}
   .gfield-copy:hover{background:var(--accent-hover)}
+  .gfield-copy:active{transform:scale(0.97)}
   .gfield-copy.copied{background:var(--success)}
 
   /* Lightbox */
   .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;cursor:zoom-out}
   .lightbox.open{display:flex}
   .lightbox img{max-width:100%;max-height:90vh;object-fit:contain;border-radius:4px}
-  .lightbox .close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);color:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+  .lightbox .close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.2);color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
   .lightbox .close:hover{background:rgba(255,255,255,.35)}
+  .lightbox .close:active{background:rgba(255,255,255,.5)}
 
   /* FAQ */
   .faq h2{font-size:16px;margin:0 0 12px}
   .faq-item{border-bottom:1px solid var(--border)}
   .faq-item:last-child{border-bottom:none}
-  .faq-q{width:100%;background:none;border:none;padding:14px 0;text-align:left;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .faq-q{width:100%;background:none;border:none;padding:16px 0;text-align:left;font-size:14px;font-weight:500;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:var(--touch-target)}
   .faq-q:hover{color:var(--accent)}
+  .faq-q:active{color:var(--accent-hover)}
   .faq-q .chev{transition:transform .2s;color:var(--muted);flex:0 0 auto}
   .faq-item.open .faq-q .chev{transform:rotate(180deg)}
   .faq-a{max-height:0;overflow:hidden;transition:max-height .25s;font-size:13px;line-height:1.6;color:var(--muted)}
@@ -346,10 +379,8 @@
 
     <div class="info" id="howto">
       <b>Nasıl çalışır:</b> Aşağıdaki her alıcının yanındaki butona bas. <span class="desktop-text">Yeni sekmede Gmail taslağı açılır</span><span class="mobile-text" style="display:none">Mail uygulaman açılır</span>, konu ve mesaj hazır gelir. "Gönder"e basıp buraya dön, sıradakine geç. İlerleme kaydedilir — tarayıcıyı kapatsan bile kaldığın yerden devam edebilirsin.
-      <!-- Kopyala butonu geçici olarak deaktif:
       <br><br>
-      <b>📋 Mail uygulaman açılmıyorsa</b> (iPhone/iCloud kullanıcıları): Her satırın solundaki kopyala ikonuna bas — alıcı, konu ve metin panoya kopyalanır, kullandığın mail uygulamasına (iCloud web, Outlook vb.) yapıştırabilirsin.
-      -->
+      <b>📋 Mail uygulaman açılmıyorsa</b> (iPhone/iCloud kullanıcıları): Her satırın solundaki <span style="display:inline-block; vertical-align:middle; background:#fff; border:1px solid var(--border); border-radius:4px; padding:2px 6px;"><svg width="14" height="14" viewBox="0 0 24 24" style="fill:currentColor; vertical-align:middle;"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg></span> kopyala butonuna bas — alıcı, konu ve metin panoya kopyalanır, kullandığın mail uygulamasına (iCloud web, Outlook vb.) yapıştırabilirsin.
     </div>
 
     <div class="sig-form" id="sigForm">
@@ -467,12 +498,6 @@
   </div>
 </div>
 
-<!-- ============================================================
-     DÜZENLENECEK TEK KISIM — alıcılar ve mesaj aşağıda.
-     Galeri artık otomatik: images/ klasörüne resim at, otomatik eklenir.
-     Dosya adı = X kullanıcı adı. Aynı kişiden birden fazla resim için:
-     handle.jpg (ilk) + handle_2.jpg, handle_3.jpg (sonrakiler)
-     ============================================================ -->
 <script>
 const CAMPAIGN = {
   title: "TADC: The Last Act — Türkiye Dağıtım Talebi",
@@ -483,8 +508,6 @@ const CAMPAIGN = {
   // recipients: recipients.txt dosyasından otomatik çekiliyor — yeni dağıtımcı eklemek için o dosyayı düzenle.
 
   // GitHub API erişilemezse kullanılacak yedek liste (manuel).
-  // Normalde buraya dokunmana gerek yok; images/ klasörüne resim atınca
-  // otomatik eklenecek. Bu sadece GitHub API çökerse gösterilecek liste.
   featuredPostsFallback: [
     { image: "images/CloudYT001.png", handle: "CloudYT001" },
     { image: "images/Inhundefender.jpg", handle: "Inhundefender" },
@@ -554,7 +577,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     let loadedCount = 0, errorCount = 0;
     posts.forEach((p, i) => {
       const profileUrl = p.postUrl || ('https://x.com/' + p.handle);
-      // Dosya adındaki özel karakterleri URL-safe yap (boşluk, Türkçe karakter vs.)
       const imgUrl = p.image.split('/').map(encodeURIComponent).join('/');
 
       const link = document.createElement('a');
@@ -580,7 +602,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
         wrap.innerHTML = '<div class="broken">🖼️<br>Görsel yüklenemedi<br><small>' + esc(p.image) + '</small></div>';
       });
       img.addEventListener('load', () => { loadedCount++; });
-      // src'yi EN SON set et ki error listener tetiklenebilsin
       img.src = imgUrl;
 
       img.parentElement.style.cursor = 'zoom-in';
@@ -597,7 +618,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
       gallery.appendChild(link);
     });
-    // 3 saniye sonra yükleme raporu
     setTimeout(() => {
       console.log('[Galeri] Rapor:', posts.length, 'kart,', loadedCount, 'yüklendi,', errorCount, 'hata');
     }, 3000);
@@ -608,11 +628,9 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   }
 
   async function loadGallery() {
-    // Eski cache anahtarlarını temizle (v1, v2 gibi)
     try { localStorage.removeItem('gh-gallery-cache-v1'); } catch {}
     try { localStorage.removeItem('gh-gallery-cache-v2'); } catch {}
 
-    // 1) Cache kontrolü
     try {
       const cached = JSON.parse(localStorage.getItem(GH_CACHE_KEY) || 'null');
       if (cached && Date.now() - cached.t < GH_CACHE_MS && Array.isArray(cached.posts) && cached.posts.length > 0) {
@@ -622,7 +640,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
       }
     } catch {}
 
-    // 2) GitHub API'den çek (5 sn timeout ile)
     const ctrl = new AbortController();
     const timeoutId = setTimeout(() => ctrl.abort(), 5000);
     try {
@@ -643,7 +660,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
         .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
         .map(f => ({
           image: GH_PATH + '/' + f.name,
-          // Dosya adından handle çıkar: uzantıyı at, sonra _N ekini (örn _2, _3) sil
           handle: f.name.replace(imgRe, '').replace(/_\d+$/, '')
         }));
       console.log('[Galeri] İşlenecek görsel sayısı:', posts.length);
@@ -656,7 +672,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     } catch (e) {
       clearTimeout(timeoutId);
       console.error('[Galeri] Hata:', e);
-      // 3) GitHub API çalışmadıysa fallback listesine düş
       const fb = (CAMPAIGN.featuredPostsFallback || []).filter(p => p && p.image && p.handle);
       if (fb.length > 0) {
         console.warn('[Galeri] Fallback listeye düşüldü');
@@ -689,11 +704,29 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
   loadGallery();
 
-  // ---------- Paylaş butonları ----------
+  // ---------- Paylaş butonları (native share destekli) ----------
   document.querySelectorAll('[data-share]').forEach(btn => {
     btn.addEventListener('click', async () => {
       const type = btn.dataset.share;
       track('share_click', { platform: type });
+
+      if (type === 'native' || (type === 'copy' && navigator.share)) {
+        // Native share sheet (mobil)
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'TADC Türkiye Dağıtım Kampanyası',
+              text: SHARE_TEXT,
+              url: SITE_URL,
+            });
+            track('share_native_success');
+          } catch (e) {
+            if (e.name !== 'AbortError') console.warn('Share error:', e);
+          }
+          return;
+        }
+      }
+
       if (type === 'whatsapp') {
         window.open('https://wa.me/?text=' + encodeURIComponent(SHARE_TEXT + ' ' + SITE_URL), '_blank', 'noopener');
       } else if (type === 'x') {
@@ -774,7 +807,7 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   sigEmail.addEventListener('input', saveSig);
 
   // ---------- GLITCH'e doğrudan mail ----------
-  const GLITCH_EMAIL = 'business@glitchprod.com'; // doğru adres farklıysa burayı değiştir
+  const GLITCH_EMAIL = 'business@glitchprod.com';
   const GLITCH_SUBJECT = "Please respond to Turkish distributors — TADC: The Last Act";
   const GLITCH_BTN_LABEL = '📧 Mail Aç';
   let glitchBody = null;
@@ -784,7 +817,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     .catch(err => console.error('mail-body-glitch.txt yüklenemedi:', err));
 
   const glitchBtn = $('glitchBtn');
-
   const glitchSource = $('glitchSource');
   if (glitchSource) glitchSource.addEventListener('click', () => track('glitch_source_click'));
 
@@ -819,7 +851,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
       window.open(url, '_blank', 'noopener');
     }
 
-    // Geçici feedback: 2s "✓ Mail açıldı" göster, sonra eski haline dön
     glitchBtn.classList.add('done');
     glitchBtn.textContent = '✓ Mail açıldı';
     setTimeout(() => {
@@ -836,7 +867,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   const GLITCH_FORM_SUBJECT = 'Please respond to Turkish distributors — TADC: The Last Act';
   const GLITCH_FORM_OPEN_LABEL = '🔗 Contact sayfasını yeni sekmede aç';
 
-  // Contact form mesajı ayrı bir taslaktan geliyor
   let contactFormBody = null;
   fetch('contact-form-body.txt?t=' + Date.now())
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
@@ -862,7 +892,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
   function closeGlitchFormModal() {
     glitchFormModal.classList.remove('open');
     document.body.style.overflow = '';
-    // Modal kapandığında iç butonu eski haline döndür
     glitchFormOpenPage.classList.remove('opened');
     glitchFormOpenPage.innerHTML = GLITCH_FORM_OPEN_LABEL;
   }
@@ -880,7 +909,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
     glitchFormOpenPage.innerHTML = '✓ Sayfa yeni sekmede açıldı — Subject ve Message&rsquo;ı kopyalayıp yapıştır';
   });
 
-  // Per-field copy buttons
   glitchFormModal.querySelectorAll('.gfield-copy').forEach(btn => {
     btn.addEventListener('click', async () => {
       const targetId = btn.dataset.target;
@@ -1016,7 +1044,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
         const body = buildBody();
         if (body === null) return;
 
-        // Kopyala butonu
         if (b.dataset.action === 'copy') {
           const fullText = 'Alıcı: ' + it.to + '\nKonu: ' + it.subject + '\n\n' + body;
           try {
@@ -1042,7 +1069,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
           return;
         }
 
-        // Maili aç butonu (varsayılan)
         track('mail_open', {
           recipient_name: it.row.isim || it.to,
           recipient_email: it.to,
@@ -1053,8 +1079,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
         const url = composeUrl(it.to, it.subject, body);
         if (isIOS) {
-          // iOS Safari gizli anchor'a programatik click'i mailto: için bloklayabiliyor.
-          // window.location.href mailto'yu sayfayı terk etmeden doğru şekilde tetikler.
           window.location.href = url;
         } else if (isMobile) {
           const a = document.createElement('a');
