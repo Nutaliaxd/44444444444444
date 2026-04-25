@@ -791,13 +791,6 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 
   loadGallery();
 
-  const stickyCtaBtn = $('stickyCtaBtn');
-  if (stickyCtaBtn) {
-    stickyCtaBtn.addEventListener('click', () => {
-      $('list').scrollIntoView({behavior: 'smooth'});
-      track('sticky_cta_click');
-    });
-  }
 
   // ---------- Paylaş butonları (native share destekli) ----------
   document.querySelectorAll('[data-share]').forEach(btn => {
@@ -1235,5 +1228,11 @@ const SHARE_TEXT = "The Amazing Digital Circus: The Last Act Türkiye'de vizyona
 <div class="sticky-cta">
   <button class="sticky-cta-btn" id="stickyCtaBtn">📧 Mail Göndermeye Başla</button>
 </div>
+<script>
+  document.getElementById('stickyCtaBtn').addEventListener('click', function() {
+    document.getElementById('list').scrollIntoView({behavior: 'smooth'});
+    try { if (typeof gtag === 'function') gtag('event', 'sticky_cta_click'); } catch(e) {}
+  });
+</script>
 </body>
 </html>
